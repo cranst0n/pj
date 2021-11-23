@@ -114,7 +114,7 @@ void main() {
   });
 
   test('Decoder.fold', () {
-    final decoder = decodeInt('x').fold((_) => 'left', (p0) => 'right');
+    final decoder = decodeInt('x').fold((_) => 'left', (_) => 'right');
 
     decoder.decode({'x': 0}).fold(
       (err) => fail('fold failed: $err'),

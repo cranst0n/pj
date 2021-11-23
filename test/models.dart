@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
-import 'package:faker/faker.dart';
 import 'package:pj/pj.dart';
 
 class Foo extends Equatable {
@@ -25,11 +24,6 @@ class Foo extends Equatable {
 
   @override
   List<Object?> get props => [a, b];
-
-  static Foo gen() => Foo(
-        Faker().randomGenerator.integer(999999),
-        Faker().randomGenerator.boolean(),
-      );
 }
 
 class Bar extends Equatable {
@@ -54,11 +48,6 @@ class Bar extends Equatable {
 
   @override
   List<Object?> get props => [a, b];
-
-  static Bar gen() => Bar(
-        Faker().randomGenerator.decimal(),
-        Faker().randomGenerator.string(1000),
-      );
 }
 
 class Baz extends Equatable {
@@ -204,24 +193,4 @@ class Baz extends Equatable {
         little,
         lamb,
       ];
-
-  static Baz gen() => Baz(
-        Faker().randomGenerator.integer(10000),
-        some(Faker().randomGenerator.string(1000)),
-        none<String>(),
-        Faker().randomGenerator.decimal(),
-        Faker().randomGenerator.boolean(),
-        List.generate(100, (_) => Faker().randomGenerator.string(1000)),
-        List.generate(100, (_) => Foo.gen()),
-        Bar.gen(),
-        List.generate(25, (_) => Faker().randomGenerator.boolean()),
-        true,
-        'recovered',
-        DateTime.fromMillisecondsSinceEpoch(
-            Faker().randomGenerator.integer(100000000)),
-        DateTime.fromMillisecondsSinceEpoch(
-            Faker().randomGenerator.integer(100000000)),
-        Faker().randomGenerator.integer(100000000),
-        Faker().randomGenerator.integer(100000000),
-      );
 }

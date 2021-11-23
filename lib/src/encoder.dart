@@ -87,7 +87,7 @@ class Encoder<A> {
   static Encoder<double> get dubble => _primitive<double>();
   static Encoder<int> get integer => _primitive<int>();
   static Encoder<String> get string => _primitive<String>();
-  static Encoder<BigInt> get bigint => string.contramap((p0) => p0.toString());
+  static Encoder<BigInt> get bigint => string.contramap((bi) => bi.toString());
   static Encoder<T> _primitive<T>() => Encoder._(id);
 
   static Encoder<List<A>> list<A>(Encoder<A> elementEncoder) =>
@@ -100,16 +100,16 @@ class Encoder<A> {
       string.contramap((dt) => dt.toString());
 
   static Encoder<Duration> get duration =>
-      integer.contramap((p0) => p0.inMicroseconds);
+      integer.contramap((d) => d.inMicroseconds);
 
   // combinators
 
   Encoder<B> contramap<B>(A Function(B) f) => Encoder._((B b) => encode(f(b)));
 
   Encoder<Option<A>> get optional =>
-      Encoder._((p0) => p0.fold(() => null, (a) => a));
+      Encoder._((opt) => opt.fold(() => null, id));
 
-  Encoder<A?> get nullable => optional.contramap((p0) => optionOf(p0));
+  Encoder<A?> get nullable => optional.contramap((a) => optionOf(a));
 
   Encoder<Either<A, B>> either<B>(Encoder<B> encodeB) => Encoder._(
       (either) => either.fold((a) => encode(a), (b) => encodeB.encode(b)));

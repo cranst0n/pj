@@ -2,11 +2,12 @@ import 'package:faker/faker.dart';
 import 'package:pj/pj.dart';
 import 'package:test/test.dart';
 
+import 'arbitraries.dart';
 import 'models.dart';
 
 void main() {
   test('Roundtrip List<Bar>', () {
-    final original = List.generate(100, (_) => Bar.gen());
+    final original = List.generate(100, (_) => Arbitraries.bar());
 
     final decoded = Decoder.list(Bar.decoder)
         .decode(Encoder.list(Bar.encoder).encode(original));
@@ -34,7 +35,7 @@ void main() {
   });
 
   test('Roundtrip Baz', () {
-    final baz = Baz.gen();
+    final baz = Arbitraries.baz();
 
     Baz.decoder.decode(Baz.encoder.encode(baz)).fold(
           (err) => fail('Baz roundtrip failed: $err'),
