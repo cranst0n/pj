@@ -33,21 +33,39 @@ Decoder<Map<String, dynamic>> decodeObject(String label) =>
 Decoder<String> decodeString(String label) => decodeAt(label, Decoder.string);
 
 class Decoder<A> {
-  // Where the sausage is made
-  final DecodeResult<A> Function(dynamic) decode;
+  final Option<String> label;
+  final DecodeResult<A> Function(dynamic) _decodeF;
 
   // construction
 
-  const Decoder._(this.decode);
+  const Decoder._(this.label, this._decodeF);
 
-  static Decoder<A> pure<A>(A value) => Decoder._((_) => right(value));
+  const Decoder._unlabeled(this._decodeF) : label = const None();
 
-  static Decoder<A> lift<A>(DecodeResult<A> result) => Decoder._((_) => result);
+  Decoder._labeled(String label, this._decodeF) : label = some(label);
+
+  static Decoder<A> pure<A>(A value) => Decoder._unlabeled((_) => right(value));
+
+  static Decoder<A> lift<A>(DecodeResult<A> result) =>
+      Decoder._unlabeled((_) => result);
 
   static Decoder<A> fail<A>(String reason) => error(DecodingError(reason));
 
   static Decoder<A> error<A>(DecodingError reason) =>
-      Decoder._((_) => left(reason));
+      Decoder._unlabeled((_) => left(reason));
+
+  // Where the sausage is made
+  DecodeResult<A> decode(dynamic json) {
+    return label.fold(() => _decodeF(json), (label) {
+      if (json is Map<String, dynamic> && !json.containsKey(label)) {
+        return left(DecodingError.missingField(label));
+      } else if (json is! Map<String, dynamic>) {
+        return left(DecodingError("Expected object at field: '$label'"));
+      } else {
+        return _decodeF(json[label]);
+      }
+    });
+  }
 
   // primitives
 
@@ -65,7 +83,7 @@ class Decoder<A> {
 
   static Decoder<IList<A>> ilist<A>(Decoder<A> elementDecoder) =>
       _primitive<List<dynamic>>().flatMap(
-        (list) => Decoder._(
+        (list) => Decoder._unlabeled(
           (_) => IList.sequenceEither(
             IList.from(list.map((el) => elementDecoder.decode(el))),
           ),
@@ -78,7 +96,7 @@ class Decoder<A> {
   static Decoder<Duration> get duration =>
       integer.map((micros) => Duration(microseconds: micros));
 
-  static Decoder<T> _primitive<T>() => Decoder._((json) => json == null
+  static Decoder<T> _primitive<T>() => Decoder._unlabeled((json) => json == null
       ? left(DecodingError.missingField(''))
       : catching(() => json as T)
           .leftMap((l) => DecodingError.parsingFailure(l.toString())));
@@ -86,14 +104,14 @@ class Decoder<A> {
   // combinators
 
   Decoder<B> map<B>(B Function(A) f) =>
-      Decoder._((json) => decode(json).map(f));
+      Decoder._unlabeled((json) => decode(json).map(f));
 
-  Decoder<B> flatMap<B>(Decoder<B> Function(A) decodeB) =>
-      Decoder._((json) => decode(json).flatMap((a) => decodeB(a).decode(json)));
+  Decoder<B> flatMap<B>(Decoder<B> Function(A) decodeB) => Decoder._unlabeled(
+      (json) => decode(json).flatMap((a) => decodeB(a).decode(json)));
 
   Decoder<B> as<B>(B b) => map((_) => b);
 
-  Decoder<B> emap<B>(Either<String, B> Function(A) f) => Decoder._(
+  Decoder<B> emap<B>(Either<String, B> Function(A) f) => Decoder._unlabeled(
       (json) => decode(json).flatMap((a) => f(a).leftMap(DecodingError.apply)));
 
   Decoder<B> omap<B>(Option<B> Function(A) f, String onNone) =>
@@ -103,7 +121,7 @@ class Decoder<A> {
     B Function(DecodingError) onError,
     B Function(A) onSuccess,
   ) =>
-      Decoder._((json) => decode(json).fold(
+      Decoder._unlabeled((json) => decode(json).fold(
             (err) => pure(onError(err)).decode(json),
             (a) => pure(onSuccess(a)).decode(json),
           ));
@@ -112,7 +130,7 @@ class Decoder<A> {
       handleErrorWith((err) => pure(onFailure(err)));
 
   Decoder<A> handleErrorWith(Decoder<A> Function(DecodingError) onFailure) =>
-      Decoder._((json) =>
+      Decoder._unlabeled((json) =>
           decode(json).fold((err) => onFailure(err).decode(json), right));
 
   // handle all decoding errors
@@ -121,17 +139,22 @@ class Decoder<A> {
   Decoder<A> recoverWith(Decoder<A> other) => handleErrorWith((_) => other);
 
   // only recover from a missing field error
-  Decoder<Option<A>> get optional => Decoder._((json) => decode(json).fold(
-        (err) => err is MissingFieldFailure ? right(none()) : left(err),
-        (r) => right(some(r)),
-      ));
+  Decoder<Option<A>> get optional =>
+      Decoder._unlabeled((json) => decode(json).fold(
+            (err) => err is MissingFieldFailure ? right(none()) : left(err),
+            (r) => right(some(r)),
+          ));
 
   Decoder<A> withDefault(A a) => optional.map((x) => x.getOrElse(() => a));
 
   Decoder<A?> get nullable => optional.map((opt) => opt.fold(() => null, id));
 
-  Decoder<Either<A, B>> either<B>(Decoder<B> decodeB) =>
-      map<Either<A, B>>(left).recoverWith(decodeB.map(right));
+  Decoder<Either<A, B>> either<B>(Decoder<B> decodeB) => Decoder._(
+      label,
+      (json) => _decodeF(json).fold(
+            (err) => decodeB.decode(json).map(right),
+            (a) => right(left(a)),
+          ));
 
   Decoder<A> ensure(bool Function(A) predicate, String message) =>
       flatMap((a) => predicate(a) ? pure(a) : Decoder.fail(message));
@@ -141,15 +164,7 @@ class Decoder<A> {
 
   // downfield
 
-  Decoder<A> at(String label) => Decoder._((json) {
-        if (json is Map<String, dynamic> && !json.containsKey(label)) {
-          return left(DecodingError.missingField(label));
-        } else if (json is! Map<String, dynamic>) {
-          return left(DecodingError("Expected object at field: '$label'"));
-        } else {
-          return decode(json[label]);
-        }
-      });
+  Decoder<A> at(String label) => Decoder._labeled(label, _decodeF);
 
   // tuple
 

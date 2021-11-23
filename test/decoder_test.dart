@@ -205,15 +205,9 @@ void main() {
     expect(encoder.encode(left(42)), {'a': 42});
     expect(encoder.encode(right('foo')), {'a': 'foo'});
 
-    // TODO: the .either(Decoder.string) will not look for the 'a' key
-    //   This behavior may be fixable by introducing a LabeledDecoder
-    //   similar to LabeledEncoder that can track if we're decoding a primitive
-    //   or accessing a field.
-    // Another option may be to introduce a cursor and work off of that...
     expect(
       decodeInt('a').either(Decoder.string).decode(encoder.encode(right('42'))),
-      left<DecodingError, Either<int, String>>(DecodingError.parsingFailure(
-          "type '_InternalLinkedHashMap<String, dynamic>' is not a subtype of type 'String' in type cast")),
+      right<DecodingError, Either<int, String>>(right('42')),
     );
   });
 
