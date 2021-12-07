@@ -149,12 +149,8 @@ class Decoder<A> {
 
   Decoder<A?> get nullable => optional.map((opt) => opt.fold(() => null, id));
 
-  Decoder<Either<A, B>> either<B>(Decoder<B> decodeB) => Decoder._(
-      label,
-      (json) => _decodeF(json).fold(
-            (err) => decodeB.decode(json).map(right),
-            (a) => right(left(a)),
-          ));
+  Decoder<Either<A, B>> either<B>(Decoder<B> decodeB) =>
+      map<Either<A, B>>(left).recoverWith(decodeB.map(right));
 
   Decoder<A> ensure(bool Function(A) predicate, String message) =>
       flatMap((a) => predicate(a) ? pure(a) : Decoder.fail(message));

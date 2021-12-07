@@ -206,7 +206,9 @@ void main() {
     expect(encoder.encode(right('foo')), {'a': 'foo'});
 
     expect(
-      decodeInt('a').either(Decoder.string).decode(encoder.encode(right('42'))),
+      decodeInt('a')
+          .either(decodeString('a'))
+          .decode(encoder.encode(right('42'))),
       right<DecodingError, Either<int, String>>(right('42')),
     );
   });
