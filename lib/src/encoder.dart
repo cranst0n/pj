@@ -1,7 +1,5 @@
 import 'package:dartz/dartz.dart';
 
-import 'tuples.dart';
-
 LabeledEncoder<A> encode<A>(String label, Encoder<A> encoder) =>
     encoder.labeled(label);
 

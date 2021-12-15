@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 
 import 'error.dart';
-import 'tuples.dart';
 
 typedef DecodeResult<A> = Either<DecodingError, A>;
 
