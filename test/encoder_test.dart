@@ -13,7 +13,7 @@ void main() {
     expect(
         encodeDateTime('x')
             .encode(DateTime.fromMillisecondsSinceEpoch(0, isUtc: true)),
-        {'x': '1970-01-01 00:00:00.000Z'});
+        {'x': '1970-01-01T00:00:00.000Z'});
   });
 
   test('Encode.dubble', () {

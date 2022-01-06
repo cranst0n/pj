@@ -95,7 +95,7 @@ class Encoder<A> {
       list(elementEncoder).contramap((il) => il.toList());
 
   static Encoder<DateTime> get dateTime =>
-      string.contramap((dt) => dt.toString());
+      string.contramap((dt) => dt.toIso8601String());
 
   static Encoder<Duration> get duration =>
       integer.contramap((d) => d.inMicroseconds);
