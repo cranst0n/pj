@@ -5,47 +5,47 @@ import 'package:test/test.dart';
 import 'models.dart';
 
 void main() {
-  test('Encode.boolean', () {
+  test('Encoder.boolean', () {
     expect(encodeBool('x').encode(true), {'x': true});
   });
 
-  test('Encode.dateTime', () {
+  test('Encoder.dateTime', () {
     expect(
         encodeDateTime('x')
             .encode(DateTime.fromMillisecondsSinceEpoch(0, isUtc: true)),
         {'x': '1970-01-01T00:00:00.000Z'});
   });
 
-  test('Encode.dubble', () {
+  test('Encoder.dubble', () {
     expect(encodeDouble('x').encode(1.23), {'x': 1.23});
   });
 
-  test('Encode.duration', () {
+  test('Encoder.duration', () {
     expect(
         encodeDuration('x')
             .encode(const Duration(seconds: 1, milliseconds: 100)),
         {'x': 1100000});
   });
 
-  test('Encode.integer', () {
+  test('Encoder.integer', () {
     expect(encodeInt('x').encode(42), {'x': 42});
   });
 
-  test('Encode.string', () {
+  test('Encoder.string', () {
     expect(encodeString('x').encode('hello'), {'x': 'hello'});
   });
 
-  test('Encode.bigint', () {
+  test('Encoder.bigint', () {
     expect(encodeBigInt('x').encode(BigInt.two), {'x': '2'});
   });
 
-  test('Encode.list', () {
+  test('Encoder.list', () {
     expect(encodeList('x', Encoder.string).encode(['hello', 'world']), {
       'x': ['hello', 'world']
     });
   });
 
-  test('Encode.ilist', () {
+  test('Encoder.ilist', () {
     expect(
         encodeIList('x', Encoder.string).encode(IList.from(['hello', 'world'])),
         {
@@ -53,33 +53,33 @@ void main() {
         });
   });
 
-  test('Encode.optional', () {
+  test('Encoder.optional', () {
     expect(encodeAt('x', Encoder.string.optional).encode(some('hello')),
         {'x': 'hello'});
     expect(encodeAt('x', Encoder.string.optional).encode(none()), {'x': null});
   });
 
-  test('Encode.nullable', () {
+  test('Encoder.nullable', () {
     expect(
         encodeAt('x', Encoder.string.nullable).encode('hello'), {'x': 'hello'});
     expect(encodeAt('x', Encoder.string.nullable).encode(null), {'x': null});
   });
 
-  test('Encode.either', () {
+  test('Encoder.either', () {
     final encoder = encodeAt('x', Encoder.string.either(Encoder.integer));
 
     expect(encoder.encode(right(42)), {'x': 42});
     expect(encoder.encode(left('hello')), {'x': 'hello'});
   });
 
-  test('LabeledEncoder.contramap', () {
+  test('Encoder.contramap', () {
     expect(
       encodeInt('a').contramap<String>(int.parse).encode('42'),
       {'a': 42},
     );
   });
 
-  test('LabeledEncoder.optional', () {
+  test('Encoder.optional', () {
     expect(
       encodeInt('a').optional.encode(some(42)),
       {'a': 42},
@@ -91,7 +91,7 @@ void main() {
     );
   });
 
-  test('LabeledEncoder.nullable', () {
+  test('Encoder.nullable', () {
     expect(
       encodeInt('a').nullable.encode(42),
       {'a': 42},
@@ -103,7 +103,7 @@ void main() {
     );
   });
 
-  test('LabeledEncoder.labeled', () {
+  test('Encoder.labeled', () {
     expect(
         encodeAt('foo', Encoder.integer.labeled('key'))
             .labeled('key2')

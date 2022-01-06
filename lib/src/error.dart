@@ -22,6 +22,11 @@ class DecodingError {
 
   @override
   int get hashCode => runtimeType.hashCode ^ reason.hashCode;
+
+  @override
+  String toString() {
+    return '${this.runtimeType}: $reason';
+  }
 }
 
 class MissingFieldFailure extends DecodingError {

@@ -200,7 +200,7 @@ void main() {
   });
 
   test('Decoder.either behavior', () {
-    final encoder = encodeInt('a').either(Encoder.string);
+    final encoder = encodeInt('a').either(encodeString('a'));
 
     expect(encoder.encode(left(42)), {'a': 42});
     expect(encoder.encode(right('foo')), {'a': 'foo'});

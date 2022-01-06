@@ -1,83 +1,54 @@
 import 'package:dartz/dartz.dart';
 
-LabeledEncoder<A> encodeAt<A>(String label, Encoder<A> encoder) =>
+Encoder<A> encodeAt<A>(String label, Encoder<A> encoder) =>
     encoder.labeled(label);
 
-LabeledEncoder<BigInt> encodeBigInt(String label) =>
-    encodeAt(label, Encoder.bigint);
+Encoder<BigInt> encodeBigInt(String label) => encodeAt(label, Encoder.bigint);
 
-LabeledEncoder<bool> encodeBool(String label) =>
-    encodeAt(label, Encoder.boolean);
+Encoder<bool> encodeBool(String label) => encodeAt(label, Encoder.boolean);
 
-LabeledEncoder<DateTime> encodeDateTime(String label) =>
+Encoder<DateTime> encodeDateTime(String label) =>
     encodeAt(label, Encoder.dateTime);
 
-LabeledEncoder<double> encodeDouble(String label) =>
-    encodeAt(label, Encoder.dubble);
+Encoder<double> encodeDouble(String label) => encodeAt(label, Encoder.dubble);
 
-LabeledEncoder<Duration> encodeDuration(String label) =>
+Encoder<Duration> encodeDuration(String label) =>
     encodeAt(label, Encoder.duration);
 
-LabeledEncoder<int> encodeInt(String label) => encodeAt(label, Encoder.integer);
+Encoder<int> encodeInt(String label) => encodeAt(label, Encoder.integer);
 
-LabeledEncoder<IList<A>> encodeIList<A>(
+Encoder<IList<A>> encodeIList<A>(
   String label,
   Encoder<A> elementEncoder,
 ) =>
     encodeAt(label, Encoder.ilist(elementEncoder));
 
-LabeledEncoder<List<A>> encodeList<A>(
+Encoder<List<A>> encodeList<A>(
   String label,
   Encoder<A> elementEncoder,
 ) =>
     encodeAt(label, Encoder.list(elementEncoder));
 
-LabeledEncoder<String> encodeString(String label) =>
-    encodeAt(label, Encoder.string);
-
-class LabeledEncoder<A> extends Encoder<A> {
-  final String key;
-  final Encoder<A> encoder;
-
-  // construction
-
-  LabeledEncoder._(this.key, this.encoder) : super._(encoder.encode);
-
-  // encoding
-
-  @override
-  dynamic encode(A? a) => Map.fromEntries(
-        [MapEntry(key, a != null ? encoder.encode(a) : null)],
-      );
-
-  // combinators
-
-  @override
-  LabeledEncoder<B> contramap<B>(A Function(B) f) =>
-      LabeledEncoder._(key, encoder.contramap(f));
-
-  @override
-  LabeledEncoder<Option<A>> get optional =>
-      LabeledEncoder._(key, encoder.optional);
-
-  @override
-  LabeledEncoder<A?> get nullable => LabeledEncoder._(key, encoder.nullable);
-
-  @override
-  LabeledEncoder<Either<A, B>> either<B>(Encoder<B> encodeB) =>
-      LabeledEncoder._(key, encoder.either(encodeB));
-}
+Encoder<String> encodeString(String label) => encodeAt(label, Encoder.string);
 
 class Encoder<A> {
+  final Option<String> label;
   final dynamic Function(A) encodeF;
 
   // construction
 
-  const Encoder._(this.encodeF);
+  const Encoder._(this.encodeF) : label = const None();
+
+  const Encoder._labeled(this.label, this.encodeF);
 
   // encoding
 
-  dynamic encode(A a) => encodeF(a);
+  dynamic encode(A a) => label.fold<dynamic>(
+        () => encodeF(a),
+        (label) => Map.fromEntries(
+          [MapEntry(label, a != null ? encodeF(a) : null)],
+        ),
+      );
 
   // primitives
 
@@ -105,14 +76,15 @@ class Encoder<A> {
   Encoder<B> contramap<B>(A Function(B) f) => Encoder._((B b) => encode(f(b)));
 
   Encoder<Option<A>> get optional =>
-      Encoder._((opt) => opt.fold(() => null, id));
+      Encoder._labeled(label, (opt) => opt.fold(() => null, id));
 
-  Encoder<A?> get nullable => optional.contramap((a) => optionOf(a));
+  Encoder<A?> get nullable => Encoder._labeled(label, id);
 
   Encoder<Either<A, B>> either<B>(Encoder<B> encodeB) => Encoder._(
       (either) => either.fold((a) => encode(a), (b) => encodeB.encode(b)));
 
-  LabeledEncoder<A> labeled(String key) => LabeledEncoder._(key, this);
+  Encoder<A> labeled(String label) => Encoder._labeled(
+      some(label), (a) => Encoder._labeled(this.label, encodeF).encode(a));
 
   // tuples
 
