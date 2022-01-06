@@ -37,8 +37,6 @@ class Decoder<A> {
 
   // construction
 
-  const Decoder._(this.label, this._decodeF);
-
   const Decoder._unlabeled(this._decodeF) : label = const None();
 
   Decoder._labeled(String label, this._decodeF) : label = some(label);
