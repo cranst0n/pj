@@ -1,6 +1,4 @@
-import 'package:equatable/equatable.dart';
-
-class DecodingError extends Equatable {
+class DecodingError {
   final String reason;
 
   const DecodingError(this.reason);
@@ -16,7 +14,14 @@ class DecodingError extends Equatable {
   DecodingError withReason(String reason) => DecodingError(reason);
 
   @override
-  List<Object?> get props => [reason];
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DecodingError &&
+          this.runtimeType == other.runtimeType &&
+          this.reason == other.reason;
+
+  @override
+  int get hashCode => runtimeType.hashCode ^ reason.hashCode;
 }
 
 class MissingFieldFailure extends DecodingError {

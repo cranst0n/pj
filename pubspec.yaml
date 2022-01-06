@@ -8,8 +8,8 @@ environment:
 
 dependencies:
   dartz:     ^0.10.1
-  equatable: ^2.0.3
 
 dev_dependencies:
+  equatable: ^2.0.3
   faker: ^2.0.0
   test:  ^1.19.3
