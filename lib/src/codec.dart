@@ -2,28 +2,35 @@ import 'package:dartz/dartz.dart';
 import 'package:pj/src/decoder.dart';
 import 'package:pj/src/encoder.dart';
 
-Codec<A> codecAt<A>(String label, Codec<A> codec) => codec.at(label);
+/// Create a new codec from the provided [codec] that will read a JSON
+/// element at the specified [key].
+Codec<A> codecAt<A>(String key, Codec<A> codec) => codec.keyed(key);
 
-Codec<BigInt> codecBigInt(String label) => codecAt(label, Codec.bigint);
+Codec<BigInt> codecBigInt(String key) => codecAt(key, Codec.bigint);
 
-Codec<bool> codecBool(String label) => codecAt(label, Codec.boolean);
+Codec<bool> codecBool(String key) => codecAt(key, Codec.boolean);
 
-Codec<DateTime> codecDateTime(String label) => codecAt(label, Codec.dateTime);
+Codec<DateTime> codecDateTime(String key) => codecAt(key, Codec.dateTime);
 
-Codec<double> codecDouble(String label) => codecAt(label, Codec.dubble);
+Codec<double> codecDouble(String key) => codecAt(key, Codec.dubble);
 
-Codec<Duration> codecDuration(String label) => codecAt(label, Codec.duration);
+Codec<Duration> codecDuration(String key) => codecAt(key, Codec.duration);
 
-Codec<int> codecInt(String label) => codecAt(label, Codec.integer);
+Codec<int> codecInt(String key) => codecAt(key, Codec.integer);
 
-Codec<IList<A>> codecIList<A>(String label, Codec<A> elementCodec) =>
-    codecAt(label, Codec.ilist(elementCodec));
+Codec<IList<A>> codecIList<A>(String key, Codec<A> elementCodec) =>
+    codecAt(key, Codec.ilist(elementCodec));
 
-Codec<List<A>> codecList<A>(String label, Codec<A> elementCodec) =>
-    codecAt(label, Codec.list(elementCodec));
+Codec<List<A>> codecList<A>(String key, Codec<A> elementCodec) =>
+    codecAt(key, Codec.list(elementCodec));
 
-Codec<String> codecString(String label) => codecAt(label, Codec.string);
+Codec<String> codecString(String key) => codecAt(key, Codec.string);
 
+/// A Codec is a combination of both an [Encoder] and a [Decoder]. It provides
+/// the functionality of converting between values of type A and JSON.
+///
+/// It mainly exists to make building encoders/decoders more convenient.
+///
 class Codec<A> {
   final Decoder<A> decoder;
   final Encoder<A> encoder;
@@ -57,8 +64,7 @@ class Codec<A> {
 
   // Common combinators
 
-  Codec<A> at(String label) =>
-      Codec._(decoder.at(label), encoder.labeled(label));
+  Codec<A> keyed(String key) => Codec._(decoder.keyed(key), encoder.keyed(key));
 
   Codec<B> xmap<B>(B Function(A) f, A Function(B) g) =>
       Codec._(decoder.map(f), encoder.contramap(g));

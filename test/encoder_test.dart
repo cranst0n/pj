@@ -54,19 +54,19 @@ void main() {
   });
 
   test('Encoder.optional', () {
-    expect(encodeAt('x', Encoder.string.optional).encode(some('hello')),
+    expect(encodeKey('x', Encoder.string.optional).encode(some('hello')),
         {'x': 'hello'});
-    expect(encodeAt('x', Encoder.string.optional).encode(none()), {'x': null});
+    expect(encodeKey('x', Encoder.string.optional).encode(none()), {'x': null});
   });
 
   test('Encoder.nullable', () {
-    expect(
-        encodeAt('x', Encoder.string.nullable).encode('hello'), {'x': 'hello'});
-    expect(encodeAt('x', Encoder.string.nullable).encode(null), {'x': null});
+    expect(encodeKey('x', Encoder.string.nullable).encode('hello'),
+        {'x': 'hello'});
+    expect(encodeKey('x', Encoder.string.nullable).encode(null), {'x': null});
   });
 
   test('Encoder.either', () {
-    final encoder = encodeAt('x', Encoder.string.either(Encoder.integer));
+    final encoder = encodeKey('x', Encoder.string.either(Encoder.integer));
 
     expect(encoder.encode(right(42)), {'x': 42});
     expect(encoder.encode(left('hello')), {'x': 'hello'});
@@ -103,11 +103,9 @@ void main() {
     );
   });
 
-  test('Encoder.labeled', () {
+  test('Encoder.keyed', () {
     expect(
-        encodeAt('foo', Encoder.integer.labeled('key'))
-            .labeled('key2')
-            .encode(2),
+        encodeKey('foo', Encoder.integer.keyed('key')).keyed('key2').encode(2),
         {
           'key2': {
             'foo': {'key': 2}
@@ -115,8 +113,7 @@ void main() {
         });
 
     expect(
-        encodeAt('foo', Encoder.integer.labeled('key').labeled('key2'))
-            .encode(2),
+        encodeKey('foo', Encoder.integer.keyed('key').keyed('key2')).encode(2),
         {
           'foo': {
             'key2': {'key': 2}
@@ -137,7 +134,7 @@ void main() {
         .decode(Encoder.list(Bar.codec.encoder).encode(original));
 
     decoded.fold(
-      (err) => fail('Bar roundtrip decode failed: $err'),
+      (err) => fail('Bar roundtrip decode should not fail: $err'),
       (actual) => expect(actual, original),
     );
   });
@@ -152,15 +149,15 @@ void main() {
         .decode(Encoder.list(Encoder.dateTime).encode(expected));
 
     decoded.fold(
-      (err) => fail('List<DateTime> decode failed: $err'),
+      (err) => fail('List<DateTime> decode should not fail: $err'),
       (actual) => expect(actual, expected),
     );
   });
 
   test('Encoder.forProduct2', () {
     final encoder = Encoder.forProduct2(
-      encodeAt('a', Encoder.integer),
-      encodeAt('b', Encoder.integer),
+      encodeKey('a', Encoder.integer),
+      encodeKey('b', Encoder.integer),
       id,
     );
 
@@ -172,9 +169,9 @@ void main() {
 
   test('Encoder.forProduct3', () {
     final encoder = Encoder.forProduct3(
-      encodeAt('a', Encoder.integer),
-      encodeAt('b', Encoder.integer),
-      encodeAt('c', Encoder.integer),
+      encodeKey('a', Encoder.integer),
+      encodeKey('b', Encoder.integer),
+      encodeKey('c', Encoder.integer),
       id,
     );
 
@@ -186,10 +183,10 @@ void main() {
 
   test('Encoder.forProduct4', () {
     final encoder = Encoder.forProduct4(
-      encodeAt('a', Encoder.integer),
-      encodeAt('b', Encoder.integer),
-      encodeAt('c', Encoder.integer),
-      encodeAt('d', Encoder.integer),
+      encodeKey('a', Encoder.integer),
+      encodeKey('b', Encoder.integer),
+      encodeKey('c', Encoder.integer),
+      encodeKey('d', Encoder.integer),
       id,
     );
 
@@ -201,11 +198,11 @@ void main() {
 
   test('Encoder.forProduct5', () {
     final encoder = Encoder.forProduct5(
-      encodeAt('a', Encoder.integer),
-      encodeAt('b', Encoder.integer),
-      encodeAt('c', Encoder.integer),
-      encodeAt('d', Encoder.integer),
-      encodeAt('e', Encoder.integer),
+      encodeKey('a', Encoder.integer),
+      encodeKey('b', Encoder.integer),
+      encodeKey('c', Encoder.integer),
+      encodeKey('d', Encoder.integer),
+      encodeKey('e', Encoder.integer),
       id,
     );
 
@@ -217,12 +214,12 @@ void main() {
 
   test('Encoder.forProduct6', () {
     final encoder = Encoder.forProduct6(
-      encodeAt('a', Encoder.integer),
-      encodeAt('b', Encoder.integer),
-      encodeAt('c', Encoder.integer),
-      encodeAt('d', Encoder.integer),
-      encodeAt('e', Encoder.integer),
-      encodeAt('f', Encoder.integer),
+      encodeKey('a', Encoder.integer),
+      encodeKey('b', Encoder.integer),
+      encodeKey('c', Encoder.integer),
+      encodeKey('d', Encoder.integer),
+      encodeKey('e', Encoder.integer),
+      encodeKey('f', Encoder.integer),
       id,
     );
 
@@ -234,13 +231,13 @@ void main() {
 
   test('Encoder.forProduct7', () {
     final encoder = Encoder.forProduct7(
-      encodeAt('a', Encoder.integer),
-      encodeAt('b', Encoder.integer),
-      encodeAt('c', Encoder.integer),
-      encodeAt('d', Encoder.integer),
-      encodeAt('e', Encoder.integer),
-      encodeAt('f', Encoder.integer),
-      encodeAt('g', Encoder.integer),
+      encodeKey('a', Encoder.integer),
+      encodeKey('b', Encoder.integer),
+      encodeKey('c', Encoder.integer),
+      encodeKey('d', Encoder.integer),
+      encodeKey('e', Encoder.integer),
+      encodeKey('f', Encoder.integer),
+      encodeKey('g', Encoder.integer),
       id,
     );
 
@@ -252,14 +249,14 @@ void main() {
 
   test('Encoder.forProduct8', () {
     final encoder = Encoder.forProduct8(
-      encodeAt('a', Encoder.integer),
-      encodeAt('b', Encoder.integer),
-      encodeAt('c', Encoder.integer),
-      encodeAt('d', Encoder.integer),
-      encodeAt('e', Encoder.integer),
-      encodeAt('f', Encoder.integer),
-      encodeAt('g', Encoder.integer),
-      encodeAt('h', Encoder.integer),
+      encodeKey('a', Encoder.integer),
+      encodeKey('b', Encoder.integer),
+      encodeKey('c', Encoder.integer),
+      encodeKey('d', Encoder.integer),
+      encodeKey('e', Encoder.integer),
+      encodeKey('f', Encoder.integer),
+      encodeKey('g', Encoder.integer),
+      encodeKey('h', Encoder.integer),
       id,
     );
 
@@ -271,15 +268,15 @@ void main() {
 
   test('Encoder.forProduct9', () {
     final encoder = Encoder.forProduct9(
-      encodeAt('a', Encoder.integer),
-      encodeAt('b', Encoder.integer),
-      encodeAt('c', Encoder.integer),
-      encodeAt('d', Encoder.integer),
-      encodeAt('e', Encoder.integer),
-      encodeAt('f', Encoder.integer),
-      encodeAt('g', Encoder.integer),
-      encodeAt('h', Encoder.integer),
-      encodeAt('i', Encoder.integer),
+      encodeKey('a', Encoder.integer),
+      encodeKey('b', Encoder.integer),
+      encodeKey('c', Encoder.integer),
+      encodeKey('d', Encoder.integer),
+      encodeKey('e', Encoder.integer),
+      encodeKey('f', Encoder.integer),
+      encodeKey('g', Encoder.integer),
+      encodeKey('h', Encoder.integer),
+      encodeKey('i', Encoder.integer),
       id,
     );
 
@@ -291,16 +288,16 @@ void main() {
 
   test('Encoder.forProduct10', () {
     final encoder = Encoder.forProduct10(
-      encodeAt('a', Encoder.integer),
-      encodeAt('b', Encoder.integer),
-      encodeAt('c', Encoder.integer),
-      encodeAt('d', Encoder.integer),
-      encodeAt('e', Encoder.integer),
-      encodeAt('f', Encoder.integer),
-      encodeAt('g', Encoder.integer),
-      encodeAt('h', Encoder.integer),
-      encodeAt('i', Encoder.integer),
-      encodeAt('j', Encoder.integer),
+      encodeKey('a', Encoder.integer),
+      encodeKey('b', Encoder.integer),
+      encodeKey('c', Encoder.integer),
+      encodeKey('d', Encoder.integer),
+      encodeKey('e', Encoder.integer),
+      encodeKey('f', Encoder.integer),
+      encodeKey('g', Encoder.integer),
+      encodeKey('h', Encoder.integer),
+      encodeKey('i', Encoder.integer),
+      encodeKey('j', Encoder.integer),
       id,
     );
 
@@ -323,17 +320,17 @@ void main() {
 
   test('Encoder.forProduct11', () {
     final encoder = Encoder.forProduct11(
-      encodeAt('a', Encoder.integer),
-      encodeAt('b', Encoder.integer),
-      encodeAt('c', Encoder.integer),
-      encodeAt('d', Encoder.integer),
-      encodeAt('e', Encoder.integer),
-      encodeAt('f', Encoder.integer),
-      encodeAt('g', Encoder.integer),
-      encodeAt('h', Encoder.integer),
-      encodeAt('i', Encoder.integer),
-      encodeAt('j', Encoder.integer),
-      encodeAt('k', Encoder.integer),
+      encodeKey('a', Encoder.integer),
+      encodeKey('b', Encoder.integer),
+      encodeKey('c', Encoder.integer),
+      encodeKey('d', Encoder.integer),
+      encodeKey('e', Encoder.integer),
+      encodeKey('f', Encoder.integer),
+      encodeKey('g', Encoder.integer),
+      encodeKey('h', Encoder.integer),
+      encodeKey('i', Encoder.integer),
+      encodeKey('j', Encoder.integer),
+      encodeKey('k', Encoder.integer),
       id,
     );
 
@@ -357,18 +354,18 @@ void main() {
 
   test('Encoder.forProduct12', () {
     final encoder = Encoder.forProduct12(
-      encodeAt('a', Encoder.integer),
-      encodeAt('b', Encoder.integer),
-      encodeAt('c', Encoder.integer),
-      encodeAt('d', Encoder.integer),
-      encodeAt('e', Encoder.integer),
-      encodeAt('f', Encoder.integer),
-      encodeAt('g', Encoder.integer),
-      encodeAt('h', Encoder.integer),
-      encodeAt('i', Encoder.integer),
-      encodeAt('j', Encoder.integer),
-      encodeAt('k', Encoder.integer),
-      encodeAt('l', Encoder.integer),
+      encodeKey('a', Encoder.integer),
+      encodeKey('b', Encoder.integer),
+      encodeKey('c', Encoder.integer),
+      encodeKey('d', Encoder.integer),
+      encodeKey('e', Encoder.integer),
+      encodeKey('f', Encoder.integer),
+      encodeKey('g', Encoder.integer),
+      encodeKey('h', Encoder.integer),
+      encodeKey('i', Encoder.integer),
+      encodeKey('j', Encoder.integer),
+      encodeKey('k', Encoder.integer),
+      encodeKey('l', Encoder.integer),
       id,
     );
 
@@ -393,19 +390,19 @@ void main() {
 
   test('Encoder.forProduct13', () {
     final encoder = Encoder.forProduct13(
-      encodeAt('a', Encoder.integer),
-      encodeAt('b', Encoder.integer),
-      encodeAt('c', Encoder.integer),
-      encodeAt('d', Encoder.integer),
-      encodeAt('e', Encoder.integer),
-      encodeAt('f', Encoder.integer),
-      encodeAt('g', Encoder.integer),
-      encodeAt('h', Encoder.integer),
-      encodeAt('i', Encoder.integer),
-      encodeAt('j', Encoder.integer),
-      encodeAt('k', Encoder.integer),
-      encodeAt('l', Encoder.integer),
-      encodeAt('m', Encoder.integer),
+      encodeKey('a', Encoder.integer),
+      encodeKey('b', Encoder.integer),
+      encodeKey('c', Encoder.integer),
+      encodeKey('d', Encoder.integer),
+      encodeKey('e', Encoder.integer),
+      encodeKey('f', Encoder.integer),
+      encodeKey('g', Encoder.integer),
+      encodeKey('h', Encoder.integer),
+      encodeKey('i', Encoder.integer),
+      encodeKey('j', Encoder.integer),
+      encodeKey('k', Encoder.integer),
+      encodeKey('l', Encoder.integer),
+      encodeKey('m', Encoder.integer),
       id,
     );
 
@@ -431,20 +428,20 @@ void main() {
 
   test('Encoder.forProduct14', () {
     final encoder = Encoder.forProduct14(
-      encodeAt('a', Encoder.integer),
-      encodeAt('b', Encoder.integer),
-      encodeAt('c', Encoder.integer),
-      encodeAt('d', Encoder.integer),
-      encodeAt('e', Encoder.integer),
-      encodeAt('f', Encoder.integer),
-      encodeAt('g', Encoder.integer),
-      encodeAt('h', Encoder.integer),
-      encodeAt('i', Encoder.integer),
-      encodeAt('j', Encoder.integer),
-      encodeAt('k', Encoder.integer),
-      encodeAt('l', Encoder.integer),
-      encodeAt('m', Encoder.integer),
-      encodeAt('n', Encoder.integer),
+      encodeKey('a', Encoder.integer),
+      encodeKey('b', Encoder.integer),
+      encodeKey('c', Encoder.integer),
+      encodeKey('d', Encoder.integer),
+      encodeKey('e', Encoder.integer),
+      encodeKey('f', Encoder.integer),
+      encodeKey('g', Encoder.integer),
+      encodeKey('h', Encoder.integer),
+      encodeKey('i', Encoder.integer),
+      encodeKey('j', Encoder.integer),
+      encodeKey('k', Encoder.integer),
+      encodeKey('l', Encoder.integer),
+      encodeKey('m', Encoder.integer),
+      encodeKey('n', Encoder.integer),
       id,
     );
 
@@ -471,21 +468,21 @@ void main() {
 
   test('Encoder.forProduct15', () {
     final encoder = Encoder.forProduct15(
-      encodeAt('a', Encoder.integer),
-      encodeAt('b', Encoder.integer),
-      encodeAt('c', Encoder.integer),
-      encodeAt('d', Encoder.integer),
-      encodeAt('e', Encoder.integer),
-      encodeAt('f', Encoder.integer),
-      encodeAt('g', Encoder.integer),
-      encodeAt('h', Encoder.integer),
-      encodeAt('i', Encoder.integer),
-      encodeAt('j', Encoder.integer),
-      encodeAt('k', Encoder.integer),
-      encodeAt('l', Encoder.integer),
-      encodeAt('m', Encoder.integer),
-      encodeAt('n', Encoder.integer),
-      encodeAt('o', Encoder.integer),
+      encodeKey('a', Encoder.integer),
+      encodeKey('b', Encoder.integer),
+      encodeKey('c', Encoder.integer),
+      encodeKey('d', Encoder.integer),
+      encodeKey('e', Encoder.integer),
+      encodeKey('f', Encoder.integer),
+      encodeKey('g', Encoder.integer),
+      encodeKey('h', Encoder.integer),
+      encodeKey('i', Encoder.integer),
+      encodeKey('j', Encoder.integer),
+      encodeKey('k', Encoder.integer),
+      encodeKey('l', Encoder.integer),
+      encodeKey('m', Encoder.integer),
+      encodeKey('n', Encoder.integer),
+      encodeKey('o', Encoder.integer),
       id,
     );
 

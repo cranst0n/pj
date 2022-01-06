@@ -71,20 +71,20 @@ void main() {
 
   test('Decoder.lift', () {
     Decoder.lift(right(42)).decode(['x', 'y', 'z']).fold(
-      (err) => fail('Decoder lifting right should not fail.'),
+      (err) => fail('Decoder lifting right should not fail: $err'),
       (actual) => expect(actual, 42),
     );
   });
 
   test('Decoder.fail', () {
     Decoder.fail<int>('foo').decode({'x': 1}).fold(
-        (l) => expect(l, const DecodingError('foo')),
-        (r) => fail('Decoder.fail should not succeed.'));
+        (err) => expect(err, const DecodingError('foo')),
+        (actual) => fail('Decoder.fail should not succeed: $actual'));
   });
 
   test('Decoder.as', () {
-    decodeAt('x', Decoder.integer.as(42)).decode({'x': 0}).fold(
-      (err) => fail('Decoder.as should not succeed.'),
+    decodeKey('x', Decoder.integer.as(42)).decode({'x': 0}).fold(
+      (err) => fail('Decoder.as should not fail: $err'),
       (actual) => expect(actual, 42),
     );
   });
@@ -93,48 +93,48 @@ void main() {
     Either<String, int> foo(bool b) => b ? right(42) : left('emap left');
 
     Decoder.boolean.emap(foo).decode(true).fold(
-        (err) => fail('emap left failed: $err'),
+        (err) => fail('emap left should not fail: $err'),
         (actual) => expect(actual, 42));
 
     Decoder.boolean.emap(foo).decode(false).fold(
         (err) => expect(err, const DecodingError('emap left')),
-        (actual) => fail('emap right failed: $actual'));
+        (actual) => fail('emap right should not succeed: $actual'));
   });
 
   test('Decoder.omap', () {
     Option<int> foo(bool b) => b ? some(42) : none();
 
     Decoder.boolean.omap(foo, 'foo none').decode(true).fold(
-        (err) => fail('omap none failed: $err'),
+        (err) => fail('omap none should not fail: $err'),
         (actual) => expect(actual, 42));
 
     Decoder.boolean.omap(foo, 'foo none').decode(false).fold(
         (err) => expect(err, const DecodingError('foo none')),
-        (actual) => fail('omap some failed: $actual'));
+        (actual) => fail('omap some should not succeed: $actual'));
   });
 
   test('Decoder.fold', () {
     final decoder = decodeInt('x').fold((_) => 'left', (_) => 'right');
 
     decoder.decode({'x': 0}).fold(
-      (err) => fail('fold failed: $err'),
+      (err) => fail('fold should not fail: $err'),
       (actual) => expect(actual, 'right'),
     );
 
     decoder.decode({'x': bool}).fold(
-      (err) => fail('fold failed: $err'),
+      (err) => fail('fold should not fail: $err'),
       (actual) => expect(actual, 'left'),
     );
   });
 
   test('Decoder.handleError', () {
     decodeInt('x').handleError((_) => 24).decode({'x': 'string'}).fold(
-      (err) => fail('handleError failed: $err'),
+      (err) => fail('handleError should not fail: $err'),
       (actual) => expect(actual, 24),
     );
 
     decodeInt('x').handleError((_) => 24).decode({'x': 42}).fold(
-      (err) => fail('handleError failed: $err'),
+      (err) => fail('handleError should not fail: $err'),
       (actual) => expect(actual, 42),
     );
   });
@@ -149,7 +149,7 @@ void main() {
     }
 
     decodeInt('x').handleErrorWith(handler).decode({'x': 'str'}).fold(
-      (err) => fail('handleErrorWith error failed: $err'),
+      (err) => fail('handleErrorWith error should not fail: $err'),
       (actual) => expect(actual, 123),
     );
 
@@ -160,41 +160,41 @@ void main() {
   });
 
   test('Decoder.optional', () {
-    Decoder.integer.at('x').optional.decode({'x': null}).fold(
-      (err) => fail('optional null failed: $err'),
+    Decoder.integer.keyed('x').optional.decode({'x': null}).fold(
+      (err) => fail('optional null should not fail: $err'),
       (actual) => expect(actual, none<int>()),
     );
 
     // Ensure that the placement of the '.optional' doesn't matter
-    Decoder.integer.optional.at('x').decode({'x': null}).fold(
-      (err) => fail('optional null failed: $err'),
+    Decoder.integer.optional.keyed('x').decode({'x': null}).fold(
+      (err) => fail('optional null should not fail: $err'),
       (actual) => expect(actual, none<int>()),
     );
   });
 
   test('Decoder.nullable', () {
-    Decoder.integer.at('x').nullable.decode({'x': null}).fold(
-      (err) => fail('nullable null failed: $err'),
+    Decoder.integer.keyed('x').nullable.decode({'x': null}).fold(
+      (err) => fail('nullable null should not fail: $err'),
       (actual) => expect(actual, null),
     );
 
     // Ensure that the placement of the '.nullable' doesn't matter
-    Decoder.integer.nullable.at('x').decode({'x': null}).fold(
-      (err) => fail('nullable null failed: $err'),
+    Decoder.integer.nullable.keyed('x').decode({'x': null}).fold(
+      (err) => fail('nullable null should not fail: $err'),
       (actual) => expect(actual, null),
     );
   });
 
   test('Decoder.either', () {
-    final decoder = decodeAt('x', Decoder.integer.either(Decoder.boolean));
+    final decoder = decodeKey('x', Decoder.integer.either(Decoder.boolean));
 
     decoder.decode({'x': 42}).fold(
-      (err) => fail('either error failed: $err'),
+      (err) => fail('either error should not fail: $err'),
       (actual) => expect(actual, left<int, bool>(42)),
     );
 
     decoder.decode({'x': false}).fold(
-      (err) => fail('either error failed: $err'),
+      (err) => fail('either error should not fail: $err'),
       (actual) => expect(actual, right<int, bool>(false)),
     );
   });
@@ -214,19 +214,19 @@ void main() {
   });
 
   test('Decoder.withErrorMessage', () {
-    decodeAt('x', Decoder.boolean)
+    decodeKey('x', Decoder.boolean)
         .withErrorMessage('fubar')
         .decode({'y': 123}).fold(
       (err) => expect(err.reason, 'fubar'),
-      (actual) => fail('withEitherMesage error failed: $actual'),
+      (actual) => fail('withEitherMesage error should not succeed: $actual'),
     );
   });
 
   test('Decoder.at (fail)', () {
-    decodeAt('x', Decoder.boolean).decode([true, false, true]).fold(
+    decodeKey('x', Decoder.boolean).decode([true, false, true]).fold(
       (err) =>
           expect(err, const DecodingError("Expected object at field: 'x'")),
-      (actual) => fail('at error failed: $actual'),
+      (actual) => fail('at error should not succeed: $actual'),
     );
   });
 
@@ -254,7 +254,7 @@ void main() {
     };
 
     Baz.codec.decode(test).fold(
-          (err) => fail('Baz object decode failed: $err'),
+          (err) => fail('Baz object decode should not fail: $err'),
           (baz) => expect(
             baz,
             Baz(
@@ -285,7 +285,7 @@ void main() {
     ];
 
     Codec.list(Foo.codec).decode(testJson).fold(
-          (err) => fail('List<Foo> decode failed: $err'),
+          (err) => fail('List<Foo> decode should not fail: $err'),
           (actual) => expect(
             actual,
             const [Foo(1, true), Foo(42, false), Foo(3, false)],
@@ -298,7 +298,7 @@ void main() {
     final json = jsonDecode(str);
 
     Codec.list(Foo.codec).decode(json).fold(
-          (err) => fail('Foo list decode failed: $err'),
+          (err) => fail('Foo list decode should not fail: $err'),
           (r) => expect(r, const [Foo(1, false), Foo(2, true)]),
         );
   });

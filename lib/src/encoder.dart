@@ -1,52 +1,52 @@
 import 'package:dartz/dartz.dart';
 
-Encoder<A> encodeAt<A>(String label, Encoder<A> encoder) =>
-    encoder.labeled(label);
+Encoder<A> encodeKey<A>(String key, Encoder<A> encoder) => encoder.keyed(key);
 
-Encoder<BigInt> encodeBigInt(String label) => encodeAt(label, Encoder.bigint);
+Encoder<BigInt> encodeBigInt(String key) => encodeKey(key, Encoder.bigint);
 
-Encoder<bool> encodeBool(String label) => encodeAt(label, Encoder.boolean);
+Encoder<bool> encodeBool(String key) => encodeKey(key, Encoder.boolean);
 
-Encoder<DateTime> encodeDateTime(String label) =>
-    encodeAt(label, Encoder.dateTime);
+Encoder<DateTime> encodeDateTime(String key) =>
+    encodeKey(key, Encoder.dateTime);
 
-Encoder<double> encodeDouble(String label) => encodeAt(label, Encoder.dubble);
+Encoder<double> encodeDouble(String key) => encodeKey(key, Encoder.dubble);
 
-Encoder<Duration> encodeDuration(String label) =>
-    encodeAt(label, Encoder.duration);
+Encoder<Duration> encodeDuration(String key) =>
+    encodeKey(key, Encoder.duration);
 
-Encoder<int> encodeInt(String label) => encodeAt(label, Encoder.integer);
+Encoder<int> encodeInt(String key) => encodeKey(key, Encoder.integer);
 
 Encoder<IList<A>> encodeIList<A>(
-  String label,
+  String key,
   Encoder<A> elementEncoder,
 ) =>
-    encodeAt(label, Encoder.ilist(elementEncoder));
+    encodeKey(key, Encoder.ilist(elementEncoder));
 
 Encoder<List<A>> encodeList<A>(
-  String label,
+  String key,
   Encoder<A> elementEncoder,
 ) =>
-    encodeAt(label, Encoder.list(elementEncoder));
+    encodeKey(key, Encoder.list(elementEncoder));
 
-Encoder<String> encodeString(String label) => encodeAt(label, Encoder.string);
+Encoder<String> encodeString(String key) => encodeKey(key, Encoder.string);
 
+/// An [Encoder] provides the ability to convert from a type <A> to JSON.
 class Encoder<A> {
-  final Option<String> label;
+  final Option<String> key;
   final dynamic Function(A) encodeF;
 
   // construction
 
-  const Encoder._(this.encodeF) : label = const None();
+  const Encoder._unkeyed(this.encodeF) : key = const None();
 
-  const Encoder._labeled(this.label, this.encodeF);
+  const Encoder._keyed(this.key, this.encodeF);
 
   // encoding
 
-  dynamic encode(A a) => label.fold<dynamic>(
+  dynamic encode(A a) => key.fold<dynamic>(
         () => encodeF(a),
-        (label) => Map.fromEntries(
-          [MapEntry(label, a != null ? encodeF(a) : null)],
+        (key) => Map.fromEntries(
+          [MapEntry(key, a != null ? encodeF(a) : null)],
         ),
       );
 
@@ -57,10 +57,10 @@ class Encoder<A> {
   static Encoder<int> get integer => _primitive<int>();
   static Encoder<String> get string => _primitive<String>();
   static Encoder<BigInt> get bigint => string.contramap((bi) => bi.toString());
-  static Encoder<T> _primitive<T>() => Encoder._(id);
+  static Encoder<T> _primitive<T>() => Encoder._unkeyed(id);
 
   static Encoder<List<A>> list<A>(Encoder<A> elementEncoder) =>
-      Encoder._((list) => list.map(elementEncoder.encode).toList());
+      Encoder._unkeyed((list) => list.map(elementEncoder.encode).toList());
 
   static Encoder<IList<A>> ilist<A>(Encoder<A> elementEncoder) =>
       list(elementEncoder).contramap((il) => il.toList());
@@ -73,18 +73,19 @@ class Encoder<A> {
 
   // combinators
 
-  Encoder<B> contramap<B>(A Function(B) f) => Encoder._((B b) => encode(f(b)));
+  Encoder<B> contramap<B>(A Function(B) f) =>
+      Encoder._unkeyed((B b) => encode(f(b)));
 
   Encoder<Option<A>> get optional =>
-      Encoder._labeled(label, (opt) => opt.fold(() => null, id));
+      Encoder._keyed(key, (opt) => opt.fold(() => null, id));
 
-  Encoder<A?> get nullable => Encoder._labeled(label, id);
+  Encoder<A?> get nullable => Encoder._keyed(key, id);
 
-  Encoder<Either<A, B>> either<B>(Encoder<B> encodeB) => Encoder._(
+  Encoder<Either<A, B>> either<B>(Encoder<B> encodeB) => Encoder._unkeyed(
       (either) => either.fold((a) => encode(a), (b) => encodeB.encode(b)));
 
-  Encoder<A> labeled(String label) => Encoder._labeled(
-      some(label), (a) => Encoder._labeled(this.label, encodeF).encode(a));
+  Encoder<A> keyed(String key) => Encoder._keyed(
+      some(key), (a) => Encoder._keyed(this.key, encodeF).encode(a));
 
   // tuples
 
@@ -92,7 +93,7 @@ class Encoder<A> {
     Encoder<A> encodeA,
     Encoder<B> encodeB,
   ) =>
-      Encoder._((tuple) =>
+      Encoder._unkeyed((tuple) =>
           encodeA.encode(tuple.value1)..addAll(encodeB.encode(tuple.value2)));
 
   static Encoder<Tuple3<A, B, C>> tuple3<A, B, C>(
@@ -100,7 +101,7 @@ class Encoder<A> {
     Encoder<B> encodeB,
     Encoder<C> encodeC,
   ) =>
-      Encoder._((tuple) => tuple2(encodeA, encodeB).encode(tuple.init)
+      Encoder._unkeyed((tuple) => tuple2(encodeA, encodeB).encode(tuple.init)
         ..addAll(encodeC.encode(tuple.last)));
 
   static Encoder<Tuple4<A, B, C, D>> tuple4<A, B, C, D>(
@@ -109,8 +110,9 @@ class Encoder<A> {
     Encoder<C> encodeC,
     Encoder<D> encodeD,
   ) =>
-      Encoder._((tuple) => tuple3(encodeA, encodeB, encodeC).encode(tuple.init)
-        ..addAll(encodeD.encode(tuple.last)));
+      Encoder._unkeyed((tuple) =>
+          tuple3(encodeA, encodeB, encodeC).encode(tuple.init)
+            ..addAll(encodeD.encode(tuple.last)));
 
   static Encoder<Tuple5<A, B, C, D, E>> tuple5<A, B, C, D, E>(
     Encoder<A> encodeA,
@@ -119,7 +121,7 @@ class Encoder<A> {
     Encoder<D> encodeD,
     Encoder<E> encodeE,
   ) =>
-      Encoder._((tuple) =>
+      Encoder._unkeyed((tuple) =>
           tuple4(encodeA, encodeB, encodeC, encodeD).encode(tuple.init)
             ..addAll(encodeE.encode(tuple.last)));
 
@@ -131,7 +133,7 @@ class Encoder<A> {
     Encoder<E> encodeE,
     Encoder<F> encodeF,
   ) =>
-      Encoder._((tuple) =>
+      Encoder._unkeyed((tuple) =>
           tuple5(encodeA, encodeB, encodeC, encodeD, encodeE).encode(tuple.init)
             ..addAll(encodeF.encode(tuple.last)));
 
@@ -144,7 +146,7 @@ class Encoder<A> {
     Encoder<F> encodeF,
     Encoder<G> encodeG,
   ) =>
-      Encoder._((tuple) =>
+      Encoder._unkeyed((tuple) =>
           tuple6(encodeA, encodeB, encodeC, encodeD, encodeE, encodeF)
               .encode(tuple.init)
             ..addAll(encodeG.encode(tuple.last)));
@@ -159,7 +161,7 @@ class Encoder<A> {
     Encoder<G> encodeG,
     Encoder<H> encodeH,
   ) =>
-      Encoder._((tuple) =>
+      Encoder._unkeyed((tuple) =>
           tuple7(encodeA, encodeB, encodeC, encodeD, encodeE, encodeF, encodeG)
               .encode(tuple.init)
             ..addAll(encodeH.encode(tuple.last)));
@@ -176,7 +178,7 @@ class Encoder<A> {
     Encoder<H> encodeH,
     Encoder<I> encodeI,
   ) =>
-          Encoder._((tuple) => tuple8(encodeA, encodeB, encodeC, encodeD,
+          Encoder._unkeyed((tuple) => tuple8(encodeA, encodeB, encodeC, encodeD,
                   encodeE, encodeF, encodeG, encodeH)
               .encode(tuple.init)
             ..addAll(encodeI.encode(tuple.last)));
@@ -194,7 +196,7 @@ class Encoder<A> {
     Encoder<I> encodeI,
     Encoder<J> encodeJ,
   ) =>
-          Encoder._((tuple) => tuple9(encodeA, encodeB, encodeC, encodeD,
+          Encoder._unkeyed((tuple) => tuple9(encodeA, encodeB, encodeC, encodeD,
                   encodeE, encodeF, encodeG, encodeH, encodeI)
               .encode(tuple.init)
             ..addAll(encodeJ.encode(tuple.last)));
@@ -213,8 +215,8 @@ class Encoder<A> {
     Encoder<J> encodeJ,
     Encoder<K> encodeK,
   ) =>
-          Encoder._((tuple) => tuple10(encodeA, encodeB, encodeC, encodeD,
-                  encodeE, encodeF, encodeG, encodeH, encodeI, encodeJ)
+          Encoder._unkeyed((tuple) => tuple10(encodeA, encodeB, encodeC,
+                  encodeD, encodeE, encodeF, encodeG, encodeH, encodeI, encodeJ)
               .encode(tuple.init)
             ..addAll(encodeK.encode(tuple.last)));
 
@@ -233,8 +235,18 @@ class Encoder<A> {
     Encoder<K> encodeK,
     Encoder<L> encodeL,
   ) =>
-          Encoder._((tuple) => tuple11(encodeA, encodeB, encodeC, encodeD,
-                  encodeE, encodeF, encodeG, encodeH, encodeI, encodeJ, encodeK)
+          Encoder._unkeyed((tuple) => tuple11(
+                  encodeA,
+                  encodeB,
+                  encodeC,
+                  encodeD,
+                  encodeE,
+                  encodeF,
+                  encodeG,
+                  encodeH,
+                  encodeI,
+                  encodeJ,
+                  encodeK)
               .encode(tuple.init)
             ..addAll(encodeL.encode(tuple.last)));
 
@@ -254,7 +266,7 @@ class Encoder<A> {
     Encoder<L> encodeL,
     Encoder<M> encodeM,
   ) =>
-          Encoder._((tuple) => tuple12(
+          Encoder._unkeyed((tuple) => tuple12(
                   encodeA,
                   encodeB,
                   encodeC,
@@ -287,7 +299,7 @@ class Encoder<A> {
     Encoder<M> encodeM,
     Encoder<N> encodeN,
   ) =>
-          Encoder._((tuple) => tuple13(
+          Encoder._unkeyed((tuple) => tuple13(
                   encodeA,
                   encodeB,
                   encodeC,
@@ -322,7 +334,7 @@ class Encoder<A> {
     Encoder<N> encodeN,
     Encoder<O> encodeO,
   ) =>
-          Encoder._((tuple) => tuple14(
+          Encoder._unkeyed((tuple) => tuple14(
                   encodeA,
                   encodeB,
                   encodeC,
@@ -347,7 +359,7 @@ class Encoder<A> {
     Encoder<C> encodeC,
     Tuple2<B, C> Function(A) fn,
   ) =>
-      Encoder._((a) => tuple2(encodeB, encodeC).encode(fn(a)));
+      Encoder._unkeyed((a) => tuple2(encodeB, encodeC).encode(fn(a)));
 
   static Encoder<A> forProduct3<A, B, C, D>(
     Encoder<B> encodeB,
@@ -355,7 +367,7 @@ class Encoder<A> {
     Encoder<D> encodeD,
     Tuple3<B, C, D> Function(A) fn,
   ) =>
-      Encoder._((a) => tuple3(encodeB, encodeC, encodeD).encode(fn(a)));
+      Encoder._unkeyed((a) => tuple3(encodeB, encodeC, encodeD).encode(fn(a)));
 
   static Encoder<A> forProduct4<A, B, C, D, E>(
     Encoder<B> encodeB,
@@ -364,7 +376,7 @@ class Encoder<A> {
     Encoder<E> encodeE,
     Tuple4<B, C, D, E> Function(A) fn,
   ) =>
-      Encoder._(
+      Encoder._unkeyed(
           (a) => tuple4(encodeB, encodeC, encodeD, encodeE).encode(fn(a)));
 
   static Encoder<A> forProduct5<A, B, C, D, E, F>(
@@ -375,7 +387,7 @@ class Encoder<A> {
     Encoder<F> encodeF,
     Tuple5<B, C, D, E, F> Function(A) fn,
   ) =>
-      Encoder._((a) =>
+      Encoder._unkeyed((a) =>
           tuple5(encodeB, encodeC, encodeD, encodeE, encodeF).encode(fn(a)));
 
   static Encoder<A> forProduct6<A, B, C, D, E, F, G>(
@@ -387,7 +399,7 @@ class Encoder<A> {
     Encoder<G> encodeG,
     Tuple6<B, C, D, E, F, G> Function(A) fn,
   ) =>
-      Encoder._((a) =>
+      Encoder._unkeyed((a) =>
           tuple6(encodeB, encodeC, encodeD, encodeE, encodeF, encodeG)
               .encode(fn(a)));
 
@@ -401,7 +413,7 @@ class Encoder<A> {
     Encoder<H> encodeH,
     Tuple7<B, C, D, E, F, G, H> Function(A) fn,
   ) =>
-      Encoder._((a) =>
+      Encoder._unkeyed((a) =>
           tuple7(encodeB, encodeC, encodeD, encodeE, encodeF, encodeG, encodeH)
               .encode(fn(a)));
 
@@ -416,8 +428,8 @@ class Encoder<A> {
     Encoder<I> encodeI,
     Tuple8<B, C, D, E, F, G, H, I> Function(A) fn,
   ) =>
-      Encoder._((a) => tuple8(encodeB, encodeC, encodeD, encodeE, encodeF,
-              encodeG, encodeH, encodeI)
+      Encoder._unkeyed((a) => tuple8(encodeB, encodeC, encodeD, encodeE,
+              encodeF, encodeG, encodeH, encodeI)
           .encode(fn(a)));
 
   static Encoder<A> forProduct9<A, B, C, D, E, F, G, H, I, J>(
@@ -432,8 +444,8 @@ class Encoder<A> {
     Encoder<J> encodeJ,
     Tuple9<B, C, D, E, F, G, H, I, J> Function(A) fn,
   ) =>
-      Encoder._((a) => tuple9(encodeB, encodeC, encodeD, encodeE, encodeF,
-              encodeG, encodeH, encodeI, encodeJ)
+      Encoder._unkeyed((a) => tuple9(encodeB, encodeC, encodeD, encodeE,
+              encodeF, encodeG, encodeH, encodeI, encodeJ)
           .encode(fn(a)));
 
   static Encoder<A> forProduct10<A, B, C, D, E, F, G, H, I, J, K>(
@@ -449,8 +461,8 @@ class Encoder<A> {
     Encoder<K> encodeK,
     Tuple10<B, C, D, E, F, G, H, I, J, K> Function(A) fn,
   ) =>
-      Encoder._((a) => tuple10(encodeB, encodeC, encodeD, encodeE, encodeF,
-              encodeG, encodeH, encodeI, encodeJ, encodeK)
+      Encoder._unkeyed((a) => tuple10(encodeB, encodeC, encodeD, encodeE,
+              encodeF, encodeG, encodeH, encodeI, encodeJ, encodeK)
           .encode(fn(a)));
 
   static Encoder<A> forProduct11<A, B, C, D, E, F, G, H, I, J, K, L>(
@@ -467,8 +479,8 @@ class Encoder<A> {
     Encoder<L> encodeL,
     Tuple11<B, C, D, E, F, G, H, I, J, K, L> Function(A) fn,
   ) =>
-      Encoder._((a) => tuple11(encodeB, encodeC, encodeD, encodeE, encodeF,
-              encodeG, encodeH, encodeI, encodeJ, encodeK, encodeL)
+      Encoder._unkeyed((a) => tuple11(encodeB, encodeC, encodeD, encodeE,
+              encodeF, encodeG, encodeH, encodeI, encodeJ, encodeK, encodeL)
           .encode(fn(a)));
 
   static Encoder<A> forProduct12<A, B, C, D, E, F, G, H, I, J, K, L, M>(
@@ -486,8 +498,19 @@ class Encoder<A> {
     Encoder<M> encodeM,
     Tuple12<B, C, D, E, F, G, H, I, J, K, L, M> Function(A) fn,
   ) =>
-      Encoder._((a) => tuple12(encodeB, encodeC, encodeD, encodeE, encodeF,
-              encodeG, encodeH, encodeI, encodeJ, encodeK, encodeL, encodeM)
+      Encoder._unkeyed((a) => tuple12(
+              encodeB,
+              encodeC,
+              encodeD,
+              encodeE,
+              encodeF,
+              encodeG,
+              encodeH,
+              encodeI,
+              encodeJ,
+              encodeK,
+              encodeL,
+              encodeM)
           .encode(fn(a)));
 
   static Encoder<A> forProduct13<A, B, C, D, E, F, G, H, I, J, K, L, M, N>(
@@ -506,7 +529,7 @@ class Encoder<A> {
     Encoder<N> encodeN,
     Tuple13<B, C, D, E, F, G, H, I, J, K, L, M, N> Function(A) fn,
   ) =>
-      Encoder._((a) => tuple13(
+      Encoder._unkeyed((a) => tuple13(
               encodeB,
               encodeC,
               encodeD,
@@ -539,7 +562,7 @@ class Encoder<A> {
     Encoder<O> encodeO,
     Tuple14<B, C, D, E, F, G, H, I, J, K, L, M, N, O> Function(A) fn,
   ) =>
-      Encoder._((a) => tuple14(
+      Encoder._unkeyed((a) => tuple14(
               encodeB,
               encodeC,
               encodeD,
@@ -575,7 +598,7 @@ class Encoder<A> {
     Encoder<P> encodeP,
     Tuple15<B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> Function(A) fn,
   ) =>
-          Encoder._((a) => tuple15(
+          Encoder._unkeyed((a) => tuple15(
                   encodeB,
                   encodeC,
                   encodeD,

@@ -6,8 +6,8 @@ import 'models.dart';
 
 void main() {
   test('Codec.boolean', () {
-    _codecTest(Codec.boolean.at('foo'), true);
-    _codecTest(Codec.boolean.at('foo'), false);
+    _codecTest(Codec.boolean.keyed('foo'), true);
+    _codecTest(Codec.boolean.keyed('foo'), false);
   });
 
   test('Foo.codec', () {

@@ -5,8 +5,8 @@ class DecodingError {
 
   static DecodingError apply(String reason) => DecodingError(reason);
 
-  static DecodingError missingField(String label) =>
-      MissingFieldFailure._('MissingFieldFailure $label');
+  static DecodingError missingField(String key) =>
+      MissingFieldFailure._('MissingFieldFailure $key');
 
   static DecodingError parsingFailure(String reason) =>
       ParsingFailure._('ParsingFailure: $reason');
