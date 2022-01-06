@@ -10,16 +10,11 @@ class Foo extends Equatable {
 
   static Foo apply(int a, bool b) => Foo(a, b);
 
-  static final decoder = Decoder.forProduct2(
-    decodeAt('a', Decoder.integer).withDefault(42),
-    decodeAt('b', Decoder.boolean),
+  static final codec = Codec.forProduct2(
+    codecInt('a').withDefault(42),
+    codecBool('b'),
     Foo.apply,
-  );
-
-  static final encoder = Encoder.forProduct2<Foo, int, bool>(
-    encode('a', Encoder.integer),
-    encode('b', Encoder.boolean),
-    (foo) => tuple2(foo.a, foo.b),
+    (f) => tuple2(f.a, f.b),
   );
 
   @override
@@ -34,16 +29,11 @@ class Bar extends Equatable {
 
   static Bar apply(double a, String b) => Bar(a, b);
 
-  static final decoder = Decoder.forProduct2(
-    decodeAt('a', Decoder.dubble),
-    decodeAt('b', Decoder.string),
+  static final codec = Codec.forProduct2(
+    codecDouble('a'),
+    codecString('b'),
     Bar.apply,
-  );
-
-  static final encoder = Encoder.forProduct2<Bar, double, String>(
-    encode('a', Encoder.dubble),
-    encode('b', Encoder.string),
-    (bar) => tuple2(bar.a, bar.b),
+    (b) => tuple2(b.a, b.b),
   );
 
   @override
@@ -105,57 +95,23 @@ class Baz extends Equatable {
       Baz(integer, maybeString1, maybeString2, dubble, boolean, strings, foos,
           bar, bools, nullable, recovered, mary, had, little, lamb);
 
-  static final decoder = Decoder.forProduct15(
-    decodeInt('integer').ensure((x) => x > 0, 'int must be > 0'),
-    decodeString('maybeString1').optional,
-    decodeString('maybeString2').optional,
-    decodeAt('dubble', Decoder.dubble),
-    decodeAt('boolean', Decoder.boolean),
-    decodeAt('strings', Decoder.list(Decoder.string)),
-    decodeAt('foos', Decoder.list(Foo.decoder)),
-    decodeAt('bar', Bar.decoder),
-    decodeAt('bools', Decoder.list(Decoder.boolean)),
-    decodeAt('nullable', Decoder.boolean).nullable,
-    decodeAt('recovered', Decoder.string).recover('recovered!'),
-    decodeAt('mary', Decoder.dateTime),
-    decodeAt('had', Decoder.dateTime),
-    decodeAt('little', Decoder.integer),
-    decodeAt('lamb', Decoder.integer),
+  static final codec = Codec.forProduct15(
+    codecInt('integer').ensure((x) => x > 0, 'int must be > 0'),
+    codecString('maybeString1').optional,
+    codecString('maybeString2').optional,
+    codecDouble('dubble'),
+    codecBool('boolean'),
+    codecList('strings', Codec.string),
+    codecList('foos', Foo.codec),
+    codecAt('bar', Bar.codec),
+    codecList('bools', Codec.boolean),
+    codecAt('nullable', Codec.boolean).nullable,
+    codecString('recovered').recover('recovered!'),
+    codecDateTime('mary'),
+    codecDateTime('had'),
+    codecInt('little'),
+    codecInt('lamb'),
     Baz.apply,
-  );
-
-  static final encoder = Encoder.forProduct15<
-      Baz,
-      int,
-      Option<String>,
-      Option<String>,
-      double,
-      bool,
-      List<String>,
-      List<Foo>,
-      Bar,
-      List<bool>,
-      bool?,
-      String,
-      DateTime,
-      DateTime,
-      int,
-      int>(
-    encode('integer', Encoder.integer),
-    encode('maybeString1', Encoder.string.optional),
-    encode('maybeString2', Encoder.string.optional),
-    encode('dubble', Encoder.dubble),
-    encode('boolean', Encoder.boolean),
-    encode('strings', Encoder.list(Encoder.string)),
-    encode('foos', Encoder.list(Foo.encoder)),
-    encode('bar', Bar.encoder),
-    encode('bools', Encoder.list(Encoder.boolean)),
-    encode('nullable', Encoder.boolean),
-    encode('recovered', Encoder.string),
-    encode('mary', Encoder.dateTime),
-    encode('had', Encoder.dateTime),
-    encode('little', Encoder.integer),
-    encode('lamb', Encoder.integer),
     (baz) => Tuple15(
       baz.integer,
       baz.maybeString1,

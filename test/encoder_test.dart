@@ -6,7 +6,7 @@ import 'models.dart';
 
 void main() {
   test('Encode.boolean', () {
-    expect(encodeBoolean('x').encode(true), {'x': true});
+    expect(encodeBool('x').encode(true), {'x': true});
   });
 
   test('Encode.dateTime', () {
@@ -54,19 +54,19 @@ void main() {
   });
 
   test('Encode.optional', () {
-    expect(encode('x', Encoder.string.optional).encode(some('hello')),
+    expect(encodeAt('x', Encoder.string.optional).encode(some('hello')),
         {'x': 'hello'});
-    expect(encode('x', Encoder.string.optional).encode(none()), {'x': null});
+    expect(encodeAt('x', Encoder.string.optional).encode(none()), {'x': null});
   });
 
   test('Encode.nullable', () {
     expect(
-        encode('x', Encoder.string.nullable).encode('hello'), {'x': 'hello'});
-    expect(encode('x', Encoder.string.nullable).encode(null), {'x': null});
+        encodeAt('x', Encoder.string.nullable).encode('hello'), {'x': 'hello'});
+    expect(encodeAt('x', Encoder.string.nullable).encode(null), {'x': null});
   });
 
   test('Encode.either', () {
-    final encoder = encode('x', Encoder.string.either(Encoder.integer));
+    final encoder = encodeAt('x', Encoder.string.either(Encoder.integer));
 
     expect(encoder.encode(right(42)), {'x': 42});
     expect(encoder.encode(left('hello')), {'x': 'hello'});
@@ -105,7 +105,9 @@ void main() {
 
   test('LabeledEncoder.labeled', () {
     expect(
-        encode('foo', Encoder.integer.labeled('key')).labeled('key2').encode(2),
+        encodeAt('foo', Encoder.integer.labeled('key'))
+            .labeled('key2')
+            .encode(2),
         {
           'key2': {
             'foo': {'key': 2}
@@ -113,7 +115,8 @@ void main() {
         });
 
     expect(
-        encode('foo', Encoder.integer.labeled('key').labeled('key2')).encode(2),
+        encodeAt('foo', Encoder.integer.labeled('key').labeled('key2'))
+            .encode(2),
         {
           'foo': {
             'key2': {'key': 2}
@@ -124,14 +127,14 @@ void main() {
   test('Encode Bar', () {
     const original = Bar(1.2, 'message');
 
-    expect(Bar.encoder.encode(original), {'a': 1.2, 'b': 'message'});
+    expect(Bar.codec.encode(original), {'a': 1.2, 'b': 'message'});
   });
 
   test('Encode List<Bar>', () {
     const original = [Bar(1.2, 's0'), Bar(3.4, 's1'), Bar(5.6, 's2')];
 
-    final decoded = Decoder.list(Bar.decoder)
-        .decode(Encoder.list(Bar.encoder).encode(original));
+    final decoded = Decoder.list(Bar.codec.decoder)
+        .decode(Encoder.list(Bar.codec.encoder).encode(original));
 
     decoded.fold(
       (err) => fail('Bar roundtrip decode failed: $err'),
@@ -156,8 +159,8 @@ void main() {
 
   test('Encoder.forProduct2', () {
     final encoder = Encoder.forProduct2(
-      encode('a', Encoder.integer),
-      encode('b', Encoder.integer),
+      encodeAt('a', Encoder.integer),
+      encodeAt('b', Encoder.integer),
       id,
     );
 
@@ -169,9 +172,9 @@ void main() {
 
   test('Encoder.forProduct3', () {
     final encoder = Encoder.forProduct3(
-      encode('a', Encoder.integer),
-      encode('b', Encoder.integer),
-      encode('c', Encoder.integer),
+      encodeAt('a', Encoder.integer),
+      encodeAt('b', Encoder.integer),
+      encodeAt('c', Encoder.integer),
       id,
     );
 
@@ -183,10 +186,10 @@ void main() {
 
   test('Encoder.forProduct4', () {
     final encoder = Encoder.forProduct4(
-      encode('a', Encoder.integer),
-      encode('b', Encoder.integer),
-      encode('c', Encoder.integer),
-      encode('d', Encoder.integer),
+      encodeAt('a', Encoder.integer),
+      encodeAt('b', Encoder.integer),
+      encodeAt('c', Encoder.integer),
+      encodeAt('d', Encoder.integer),
       id,
     );
 
@@ -198,11 +201,11 @@ void main() {
 
   test('Encoder.forProduct5', () {
     final encoder = Encoder.forProduct5(
-      encode('a', Encoder.integer),
-      encode('b', Encoder.integer),
-      encode('c', Encoder.integer),
-      encode('d', Encoder.integer),
-      encode('e', Encoder.integer),
+      encodeAt('a', Encoder.integer),
+      encodeAt('b', Encoder.integer),
+      encodeAt('c', Encoder.integer),
+      encodeAt('d', Encoder.integer),
+      encodeAt('e', Encoder.integer),
       id,
     );
 
@@ -214,12 +217,12 @@ void main() {
 
   test('Encoder.forProduct6', () {
     final encoder = Encoder.forProduct6(
-      encode('a', Encoder.integer),
-      encode('b', Encoder.integer),
-      encode('c', Encoder.integer),
-      encode('d', Encoder.integer),
-      encode('e', Encoder.integer),
-      encode('f', Encoder.integer),
+      encodeAt('a', Encoder.integer),
+      encodeAt('b', Encoder.integer),
+      encodeAt('c', Encoder.integer),
+      encodeAt('d', Encoder.integer),
+      encodeAt('e', Encoder.integer),
+      encodeAt('f', Encoder.integer),
       id,
     );
 
@@ -231,13 +234,13 @@ void main() {
 
   test('Encoder.forProduct7', () {
     final encoder = Encoder.forProduct7(
-      encode('a', Encoder.integer),
-      encode('b', Encoder.integer),
-      encode('c', Encoder.integer),
-      encode('d', Encoder.integer),
-      encode('e', Encoder.integer),
-      encode('f', Encoder.integer),
-      encode('g', Encoder.integer),
+      encodeAt('a', Encoder.integer),
+      encodeAt('b', Encoder.integer),
+      encodeAt('c', Encoder.integer),
+      encodeAt('d', Encoder.integer),
+      encodeAt('e', Encoder.integer),
+      encodeAt('f', Encoder.integer),
+      encodeAt('g', Encoder.integer),
       id,
     );
 
@@ -249,14 +252,14 @@ void main() {
 
   test('Encoder.forProduct8', () {
     final encoder = Encoder.forProduct8(
-      encode('a', Encoder.integer),
-      encode('b', Encoder.integer),
-      encode('c', Encoder.integer),
-      encode('d', Encoder.integer),
-      encode('e', Encoder.integer),
-      encode('f', Encoder.integer),
-      encode('g', Encoder.integer),
-      encode('h', Encoder.integer),
+      encodeAt('a', Encoder.integer),
+      encodeAt('b', Encoder.integer),
+      encodeAt('c', Encoder.integer),
+      encodeAt('d', Encoder.integer),
+      encodeAt('e', Encoder.integer),
+      encodeAt('f', Encoder.integer),
+      encodeAt('g', Encoder.integer),
+      encodeAt('h', Encoder.integer),
       id,
     );
 
@@ -268,15 +271,15 @@ void main() {
 
   test('Encoder.forProduct9', () {
     final encoder = Encoder.forProduct9(
-      encode('a', Encoder.integer),
-      encode('b', Encoder.integer),
-      encode('c', Encoder.integer),
-      encode('d', Encoder.integer),
-      encode('e', Encoder.integer),
-      encode('f', Encoder.integer),
-      encode('g', Encoder.integer),
-      encode('h', Encoder.integer),
-      encode('i', Encoder.integer),
+      encodeAt('a', Encoder.integer),
+      encodeAt('b', Encoder.integer),
+      encodeAt('c', Encoder.integer),
+      encodeAt('d', Encoder.integer),
+      encodeAt('e', Encoder.integer),
+      encodeAt('f', Encoder.integer),
+      encodeAt('g', Encoder.integer),
+      encodeAt('h', Encoder.integer),
+      encodeAt('i', Encoder.integer),
       id,
     );
 
@@ -288,16 +291,16 @@ void main() {
 
   test('Encoder.forProduct10', () {
     final encoder = Encoder.forProduct10(
-      encode('a', Encoder.integer),
-      encode('b', Encoder.integer),
-      encode('c', Encoder.integer),
-      encode('d', Encoder.integer),
-      encode('e', Encoder.integer),
-      encode('f', Encoder.integer),
-      encode('g', Encoder.integer),
-      encode('h', Encoder.integer),
-      encode('i', Encoder.integer),
-      encode('j', Encoder.integer),
+      encodeAt('a', Encoder.integer),
+      encodeAt('b', Encoder.integer),
+      encodeAt('c', Encoder.integer),
+      encodeAt('d', Encoder.integer),
+      encodeAt('e', Encoder.integer),
+      encodeAt('f', Encoder.integer),
+      encodeAt('g', Encoder.integer),
+      encodeAt('h', Encoder.integer),
+      encodeAt('i', Encoder.integer),
+      encodeAt('j', Encoder.integer),
       id,
     );
 
@@ -320,17 +323,17 @@ void main() {
 
   test('Encoder.forProduct11', () {
     final encoder = Encoder.forProduct11(
-      encode('a', Encoder.integer),
-      encode('b', Encoder.integer),
-      encode('c', Encoder.integer),
-      encode('d', Encoder.integer),
-      encode('e', Encoder.integer),
-      encode('f', Encoder.integer),
-      encode('g', Encoder.integer),
-      encode('h', Encoder.integer),
-      encode('i', Encoder.integer),
-      encode('j', Encoder.integer),
-      encode('k', Encoder.integer),
+      encodeAt('a', Encoder.integer),
+      encodeAt('b', Encoder.integer),
+      encodeAt('c', Encoder.integer),
+      encodeAt('d', Encoder.integer),
+      encodeAt('e', Encoder.integer),
+      encodeAt('f', Encoder.integer),
+      encodeAt('g', Encoder.integer),
+      encodeAt('h', Encoder.integer),
+      encodeAt('i', Encoder.integer),
+      encodeAt('j', Encoder.integer),
+      encodeAt('k', Encoder.integer),
       id,
     );
 
@@ -354,18 +357,18 @@ void main() {
 
   test('Encoder.forProduct12', () {
     final encoder = Encoder.forProduct12(
-      encode('a', Encoder.integer),
-      encode('b', Encoder.integer),
-      encode('c', Encoder.integer),
-      encode('d', Encoder.integer),
-      encode('e', Encoder.integer),
-      encode('f', Encoder.integer),
-      encode('g', Encoder.integer),
-      encode('h', Encoder.integer),
-      encode('i', Encoder.integer),
-      encode('j', Encoder.integer),
-      encode('k', Encoder.integer),
-      encode('l', Encoder.integer),
+      encodeAt('a', Encoder.integer),
+      encodeAt('b', Encoder.integer),
+      encodeAt('c', Encoder.integer),
+      encodeAt('d', Encoder.integer),
+      encodeAt('e', Encoder.integer),
+      encodeAt('f', Encoder.integer),
+      encodeAt('g', Encoder.integer),
+      encodeAt('h', Encoder.integer),
+      encodeAt('i', Encoder.integer),
+      encodeAt('j', Encoder.integer),
+      encodeAt('k', Encoder.integer),
+      encodeAt('l', Encoder.integer),
       id,
     );
 
@@ -390,19 +393,19 @@ void main() {
 
   test('Encoder.forProduct13', () {
     final encoder = Encoder.forProduct13(
-      encode('a', Encoder.integer),
-      encode('b', Encoder.integer),
-      encode('c', Encoder.integer),
-      encode('d', Encoder.integer),
-      encode('e', Encoder.integer),
-      encode('f', Encoder.integer),
-      encode('g', Encoder.integer),
-      encode('h', Encoder.integer),
-      encode('i', Encoder.integer),
-      encode('j', Encoder.integer),
-      encode('k', Encoder.integer),
-      encode('l', Encoder.integer),
-      encode('m', Encoder.integer),
+      encodeAt('a', Encoder.integer),
+      encodeAt('b', Encoder.integer),
+      encodeAt('c', Encoder.integer),
+      encodeAt('d', Encoder.integer),
+      encodeAt('e', Encoder.integer),
+      encodeAt('f', Encoder.integer),
+      encodeAt('g', Encoder.integer),
+      encodeAt('h', Encoder.integer),
+      encodeAt('i', Encoder.integer),
+      encodeAt('j', Encoder.integer),
+      encodeAt('k', Encoder.integer),
+      encodeAt('l', Encoder.integer),
+      encodeAt('m', Encoder.integer),
       id,
     );
 
@@ -428,20 +431,20 @@ void main() {
 
   test('Encoder.forProduct14', () {
     final encoder = Encoder.forProduct14(
-      encode('a', Encoder.integer),
-      encode('b', Encoder.integer),
-      encode('c', Encoder.integer),
-      encode('d', Encoder.integer),
-      encode('e', Encoder.integer),
-      encode('f', Encoder.integer),
-      encode('g', Encoder.integer),
-      encode('h', Encoder.integer),
-      encode('i', Encoder.integer),
-      encode('j', Encoder.integer),
-      encode('k', Encoder.integer),
-      encode('l', Encoder.integer),
-      encode('m', Encoder.integer),
-      encode('n', Encoder.integer),
+      encodeAt('a', Encoder.integer),
+      encodeAt('b', Encoder.integer),
+      encodeAt('c', Encoder.integer),
+      encodeAt('d', Encoder.integer),
+      encodeAt('e', Encoder.integer),
+      encodeAt('f', Encoder.integer),
+      encodeAt('g', Encoder.integer),
+      encodeAt('h', Encoder.integer),
+      encodeAt('i', Encoder.integer),
+      encodeAt('j', Encoder.integer),
+      encodeAt('k', Encoder.integer),
+      encodeAt('l', Encoder.integer),
+      encodeAt('m', Encoder.integer),
+      encodeAt('n', Encoder.integer),
       id,
     );
 
@@ -468,21 +471,21 @@ void main() {
 
   test('Encoder.forProduct15', () {
     final encoder = Encoder.forProduct15(
-      encode('a', Encoder.integer),
-      encode('b', Encoder.integer),
-      encode('c', Encoder.integer),
-      encode('d', Encoder.integer),
-      encode('e', Encoder.integer),
-      encode('f', Encoder.integer),
-      encode('g', Encoder.integer),
-      encode('h', Encoder.integer),
-      encode('i', Encoder.integer),
-      encode('j', Encoder.integer),
-      encode('k', Encoder.integer),
-      encode('l', Encoder.integer),
-      encode('m', Encoder.integer),
-      encode('n', Encoder.integer),
-      encode('o', Encoder.integer),
+      encodeAt('a', Encoder.integer),
+      encodeAt('b', Encoder.integer),
+      encodeAt('c', Encoder.integer),
+      encodeAt('d', Encoder.integer),
+      encodeAt('e', Encoder.integer),
+      encodeAt('f', Encoder.integer),
+      encodeAt('g', Encoder.integer),
+      encodeAt('h', Encoder.integer),
+      encodeAt('i', Encoder.integer),
+      encodeAt('j', Encoder.integer),
+      encodeAt('k', Encoder.integer),
+      encodeAt('l', Encoder.integer),
+      encodeAt('m', Encoder.integer),
+      encodeAt('n', Encoder.integer),
+      encodeAt('o', Encoder.integer),
       id,
     );
 

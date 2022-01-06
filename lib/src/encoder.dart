@@ -1,39 +1,39 @@
 import 'package:dartz/dartz.dart';
 
-LabeledEncoder<A> encode<A>(String label, Encoder<A> encoder) =>
+LabeledEncoder<A> encodeAt<A>(String label, Encoder<A> encoder) =>
     encoder.labeled(label);
 
 LabeledEncoder<BigInt> encodeBigInt(String label) =>
-    encode(label, Encoder.bigint);
+    encodeAt(label, Encoder.bigint);
 
-LabeledEncoder<bool> encodeBoolean(String label) =>
-    encode(label, Encoder.boolean);
+LabeledEncoder<bool> encodeBool(String label) =>
+    encodeAt(label, Encoder.boolean);
 
 LabeledEncoder<DateTime> encodeDateTime(String label) =>
-    encode(label, Encoder.dateTime);
+    encodeAt(label, Encoder.dateTime);
 
 LabeledEncoder<double> encodeDouble(String label) =>
-    encode(label, Encoder.dubble);
+    encodeAt(label, Encoder.dubble);
 
 LabeledEncoder<Duration> encodeDuration(String label) =>
-    encode(label, Encoder.duration);
+    encodeAt(label, Encoder.duration);
 
-LabeledEncoder<int> encodeInt(String label) => encode(label, Encoder.integer);
+LabeledEncoder<int> encodeInt(String label) => encodeAt(label, Encoder.integer);
 
 LabeledEncoder<IList<A>> encodeIList<A>(
   String label,
   Encoder<A> elementEncoder,
 ) =>
-    encode(label, Encoder.ilist(elementEncoder));
+    encodeAt(label, Encoder.ilist(elementEncoder));
 
 LabeledEncoder<List<A>> encodeList<A>(
   String label,
   Encoder<A> elementEncoder,
 ) =>
-    encode(label, Encoder.list(elementEncoder));
+    encodeAt(label, Encoder.list(elementEncoder));
 
 LabeledEncoder<String> encodeString(String label) =>
-    encode(label, Encoder.string);
+    encodeAt(label, Encoder.string);
 
 class LabeledEncoder<A> extends Encoder<A> {
   final String key;
@@ -46,7 +46,7 @@ class LabeledEncoder<A> extends Encoder<A> {
   // encoding
 
   @override
-  Map<String, dynamic> encode(A? a) => Map.fromEntries(
+  dynamic encode(A? a) => Map.fromEntries(
         [MapEntry(key, a != null ? encoder.encode(a) : null)],
       );
 
@@ -61,7 +61,7 @@ class LabeledEncoder<A> extends Encoder<A> {
       LabeledEncoder._(key, encoder.optional);
 
   @override
-  Encoder<A?> get nullable => LabeledEncoder._(key, encoder.nullable);
+  LabeledEncoder<A?> get nullable => LabeledEncoder._(key, encoder.nullable);
 
   @override
   LabeledEncoder<Either<A, B>> either<B>(Encoder<B> encodeB) =>

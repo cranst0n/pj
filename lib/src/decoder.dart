@@ -82,7 +82,7 @@ class Decoder<A> {
       _primitive<List<dynamic>>().flatMap(
         (list) => Decoder._unlabeled(
           (_) => IList.sequenceEither(
-            IList.from(list.map((el) => elementDecoder.decode(el))),
+            IList.from(list.map(elementDecoder.decode)),
           ),
         ),
       );

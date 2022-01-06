@@ -253,7 +253,7 @@ void main() {
       'lamb': -42,
     };
 
-    Baz.decoder.decode(test).fold(
+    Baz.codec.decode(test).fold(
           (err) => fail('Baz object decode failed: $err'),
           (baz) => expect(
             baz,
@@ -284,10 +284,8 @@ void main() {
       {'a': 3, 'b': false},
     ];
 
-    final decoder = Decoder.list(Foo.decoder);
-
-    decoder.decode(testJson).fold(
-          (err) => fail('List<Foo> decode failed!'),
+    Codec.list(Foo.codec).decode(testJson).fold(
+          (err) => fail('List<Foo> decode failed: $err'),
           (actual) => expect(
             actual,
             const [Foo(1, true), Foo(42, false), Foo(3, false)],
@@ -299,7 +297,7 @@ void main() {
     const str = '[{"a":1, "b":false}, {"a":2, "b":true}]';
     final json = jsonDecode(str);
 
-    Decoder.list(Foo.decoder).decode(json).fold(
+    Codec.list(Foo.codec).decode(json).fold(
           (err) => fail('Foo list decode failed: $err'),
           (r) => expect(r, const [Foo(1, false), Foo(2, true)]),
         );
