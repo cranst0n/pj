@@ -224,8 +224,7 @@ void main() {
 
   test('Decoder.at (fail)', () {
     decodeKey('x', Decoder.boolean).decode([true, false, true]).fold(
-      (err) =>
-          expect(err, const DecodingError("Expected object at field: 'x'")),
+      (err) => expect(err, const DecodingError("Expected value at field: 'x'")),
       (actual) => fail('at error should not succeed: $actual'),
     );
   });

@@ -69,6 +69,9 @@ class Codec<A> {
   Codec<B> xmap<B>(B Function(A) f, A Function(B) g) =>
       Codec._(decoder.map(f), encoder.contramap(g));
 
+  Codec<B> exmap<B>(Either<String, B> Function(A) f, A Function(B) g) =>
+      Codec._(decoder.emap(f), encoder.contramap(g));
+
   Codec<A?> get nullable => Codec._(decoder.nullable, encoder.nullable);
   Codec<Option<A>> get optional => Codec._(decoder.optional, encoder.optional);
 
