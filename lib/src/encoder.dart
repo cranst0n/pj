@@ -94,6 +94,9 @@ class Encoder<A> {
 
   /////////////////////////////////// TupleN ///////////////////////////////////
 
+  // TODO: https://github.com/cranst0n/pj/issues/1
+  // ignore_for_file: avoid_dynamic_calls
+
   static Encoder<Tuple2<A, B>> tuple2<A, B>(
     Encoder<A> encodeA,
     Encoder<B> encodeB,
