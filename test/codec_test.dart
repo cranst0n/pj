@@ -12,8 +12,8 @@ void main() {
   });
 
   test('Codec.xmap', () {
-    final codec = Codec.string
-        .xmap<bool>((s) => s.length > 0 ? true : false, (b) => b ? 'xyz' : '');
+    final codec =
+        Codec.string.xmap<bool>((s) => s.isNotEmpty, (b) => b ? 'xyz' : '');
 
     expect(codec.encode(false), '');
     expect(codec.encode(true), 'xyz');

@@ -2,6 +2,8 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:pj/pj.dart';
 
+// ignore_for_file: avoid_positional_boolean_parameters
+
 class Foo extends Equatable {
   final int a;
   final bool b;
@@ -103,9 +105,9 @@ class Baz extends Equatable {
     codecBool('boolean'),
     codecList('strings', Codec.string),
     codecList('foos', Foo.codec),
-    codecAt('bar', Bar.codec),
+    codecKeyed('bar', Bar.codec),
     codecList('bools', Codec.boolean),
-    codecAt('nullable', Codec.boolean).nullable,
+    codecKeyed('nullable', Codec.boolean).nullable,
     codecString('recovered').recover('recovered!'),
     codecDateTime('mary'),
     codecDateTime('had'),

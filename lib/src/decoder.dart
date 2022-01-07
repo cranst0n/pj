@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
-
-import 'error.dart';
+import 'package:pj/src/error.dart';
 
 typedef DecodeResult<A> = Either<DecodingError, A>;
 
@@ -26,6 +25,8 @@ Decoder<IList<A>> decodeIList<A>(String key, Decoder<A> elementDecoder) =>
 Decoder<List<A>> decodeList<A>(String key, Decoder<A> elementDecoder) =>
     decodeKey(key, Decoder.list(elementDecoder));
 
+Decoder<num> decodeNum(String key) => decodeKey(key, Decoder.number);
+
 Decoder<Map<String, dynamic>> decodeObject(String key) =>
     decodeKey(key, Decoder.object);
 
@@ -36,21 +37,9 @@ class Decoder<A> {
   final Option<String> key;
   final DecodeResult<A> Function(dynamic) _decodeF;
 
-  // construction
-
   const Decoder._unkeyed(this._decodeF) : key = const None();
 
   const Decoder._keyed(this.key, this._decodeF);
-
-  static Decoder<A> pure<A>(A value) => Decoder._unkeyed((_) => right(value));
-
-  static Decoder<A> lift<A>(DecodeResult<A> result) =>
-      Decoder._unkeyed((_) => result);
-
-  static Decoder<A> fail<A>(String reason) => error(DecodingError(reason));
-
-  static Decoder<A> error<A>(DecodingError reason) =>
-      Decoder._unkeyed((_) => left(reason));
 
   // Where the sausage is made
   DecodeResult<A> decode(dynamic json) {
@@ -65,16 +54,37 @@ class Decoder<A> {
     });
   }
 
-  // primitives
+  static Decoder<A> error<A>(DecodingError reason) => lift(left(reason));
 
-  static Decoder<Map<String, dynamic>> get object =>
-      _primitive<Map<String, dynamic>>();
+  static Decoder<A> fail<A>(String reason) => error(DecodingError(reason));
 
+  static Decoder<A> lift<A>(DecodeResult<A> result) =>
+      Decoder._unkeyed((_) => result);
+
+  static Decoder<A> pure<A>(A value) => Decoder._unkeyed((_) => right(value));
+
+  //////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////// Primitives /////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+
+  static Decoder<BigInt> get bigint => string
+      .emap((s) => optionOf(BigInt.tryParse(s))
+          .toEither(() => 'Could not parse BigInt: $s'))
+      .handleErrorWith(
+          (err) => Decoder.error(DecodingError.parsingFailure(err.reason)));
   static Decoder<bool> get boolean => _primitive<bool>();
   static Decoder<double> get dubble => _primitive<double>();
   static Decoder<int> get integer => _primitive<int>();
+  static Decoder<num> get number => _primitive<num>();
+  static Decoder<Map<String, dynamic>> get object =>
+      _primitive<Map<String, dynamic>>();
   static Decoder<String> get string => _primitive<String>();
-  static Decoder<BigInt> get bigint => string.map(BigInt.parse);
+
+  static Decoder<DateTime> get dateTime => string.emap((str) =>
+      catching(() => DateTime.parse(str)).leftMap((err) => err.toString()));
+
+  static Decoder<Duration> get duration =>
+      integer.map((micros) => Duration(microseconds: micros));
 
   static Decoder<List<A>> list<A>(Decoder<A> elementDecoder) =>
       ilist(elementDecoder).map((l) => l.toList());
@@ -88,32 +98,28 @@ class Decoder<A> {
         ),
       );
 
-  static Decoder<DateTime> get dateTime => string.emap((str) =>
-      catching(() => DateTime.parse(str)).leftMap((l) => l.toString()));
-
-  static Decoder<Duration> get duration =>
-      integer.map((micros) => Duration(microseconds: micros));
-
   static Decoder<T> _primitive<T>() => Decoder._unkeyed((json) => json == null
       ? left(DecodingError.missingField(''))
       : catching(() => json as T)
-          .leftMap((l) => DecodingError.parsingFailure(l.toString())));
+          .leftMap((err) => DecodingError.parsingFailure(err.toString())));
 
-  // combinators
-
-  Decoder<B> map<B>(B Function(A) f) =>
-      Decoder._unkeyed((json) => decode(json).map(f));
-
-  Decoder<B> flatMap<B>(Decoder<B> Function(A) decodeB) => Decoder._unkeyed(
-      (json) => decode(json).flatMap((a) => decodeB(a).decode(json)));
+  //////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////// Combinators /////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
 
   Decoder<B> as<B>(B b) => map((_) => b);
+
+  Decoder<Either<A, B>> either<B>(Decoder<B> decodeB) =>
+      map<Either<A, B>>(left).recoverWith(decodeB.map(right));
 
   Decoder<B> emap<B>(Either<String, B> Function(A) f) => Decoder._unkeyed(
       (json) => decode(json).flatMap((a) => f(a).leftMap(DecodingError.apply)));
 
-  Decoder<B> omap<B>(Option<B> Function(A) f, String onNone) =>
-      emap((a) => f(a).toEither(() => onNone));
+  Decoder<A> ensure(bool Function(A) predicate, String message) =>
+      flatMap((a) => predicate(a) ? pure(a) : Decoder.fail(message));
+
+  Decoder<B> flatMap<B>(Decoder<B> Function(A) decodeB) => Decoder._unkeyed(
+      (json) => decode(json).flatMap((a) => decodeB(a).decode(json)));
 
   Decoder<B> fold<B>(
     B Function(DecodingError) onError,
@@ -131,36 +137,36 @@ class Decoder<A> {
       Decoder._unkeyed((json) =>
           decode(json).fold((err) => onFailure(err).decode(json), right));
 
-  // handle all decoding errors
-  Decoder<A> recover(A a) => recoverWith(pure(a));
+  Decoder<B> map<B>(B Function(A) f) =>
+      Decoder._unkeyed((json) => decode(json).map(f));
 
-  Decoder<A> recoverWith(Decoder<A> other) => handleErrorWith((_) => other);
+  Decoder<A?> get nullable => optional.map((opt) => opt.fold(() => null, id));
+
+  Decoder<B> omap<B>(Option<B> Function(A) f, String Function() onNone) =>
+      emap((a) => f(a).toEither(onNone));
 
   // only recover from a missing field error
   Decoder<Option<A>> get optional =>
       Decoder._unkeyed((json) => decode(json).fold(
             (err) => err is MissingFieldFailure ? right(none()) : left(err),
-            (r) => right(some(r)),
+            (a) => right(some(a)),
           ));
 
+  // handle all decoding errors
+  Decoder<A> recover(A a) => recoverWith(pure(a));
+
+  Decoder<A> recoverWith(Decoder<A> other) => handleErrorWith((_) => other);
+
   Decoder<A> withDefault(A a) => optional.map((x) => x.getOrElse(() => a));
-
-  Decoder<A?> get nullable => optional.map((opt) => opt.fold(() => null, id));
-
-  Decoder<Either<A, B>> either<B>(Decoder<B> decodeB) =>
-      map<Either<A, B>>(left).recoverWith(decodeB.map(right));
-
-  Decoder<A> ensure(bool Function(A) predicate, String message) =>
-      flatMap((a) => predicate(a) ? pure(a) : Decoder.fail(message));
 
   Decoder<A> withErrorMessage(String message) =>
       handleErrorWith((err) => Decoder.error(err.withReason(message)));
 
-  // downfield
-
   Decoder<A> keyed(String key) => Decoder._keyed(some(key), _decodeF);
 
-  // tuple
+  //////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////// TupleN ///////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
 
   static Decoder<Tuple2<A, B>> tuple2<A, B>(
     Decoder<A> decodeA,
@@ -364,7 +370,9 @@ class Decoder<A> {
                   decodeH, decodeI, decodeJ, decodeK, decodeL, decodeM, decodeN)
               .flatMap((t14) => decodeO.map((o) => t14.append(o)));
 
-  // product
+  //////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////// ProductN //////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
 
   static Decoder<A> forProduct2<A, B, C>(
     Decoder<B> decodeB,

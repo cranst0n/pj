@@ -5,11 +5,10 @@ class DecodingError {
 
   static DecodingError apply(String reason) => DecodingError(reason);
 
-  static DecodingError missingField(String key) =>
-      MissingFieldFailure._('MissingFieldFailure $key');
+  static DecodingError missingField(String key) => MissingFieldFailure._(key);
 
   static DecodingError parsingFailure(String reason) =>
-      ParsingFailure._('ParsingFailure: $reason');
+      ParsingFailure._(reason);
 
   DecodingError withReason(String reason) => DecodingError(reason);
 
@@ -17,16 +16,14 @@ class DecodingError {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is DecodingError &&
-          this.runtimeType == other.runtimeType &&
-          this.reason == other.reason;
+          runtimeType == other.runtimeType &&
+          reason == other.reason;
 
   @override
   int get hashCode => runtimeType.hashCode ^ reason.hashCode;
 
   @override
-  String toString() {
-    return '${this.runtimeType}: $reason';
-  }
+  String toString() => 'DecodingError: $reason';
 }
 
 class MissingFieldFailure extends DecodingError {
@@ -34,6 +31,9 @@ class MissingFieldFailure extends DecodingError {
 
   @override
   DecodingError withReason(String reason) => MissingFieldFailure._(reason);
+
+  @override
+  String toString() => 'MissingFieldFailure: $reason';
 }
 
 class ParsingFailure extends DecodingError {
@@ -41,4 +41,7 @@ class ParsingFailure extends DecodingError {
 
   @override
   DecodingError withReason(String reason) => ParsingFailure._(reason);
+
+  @override
+  String toString() => 'ParsingFailure: $reason';
 }

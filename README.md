@@ -1,7 +1,7 @@
 
 # pj
 
-Yet another JSON library build on top of [dartz](https://github.com/spebbe/dartz), loosely inspired by [circe](https://github.com/circe/circe).
+Yet another JSON library build on top of [dartz](https://pub.dev/packages/dartz), loosely inspired by [circe](https://circe.github.io/circe/).
 
 Use at your own risk.
 

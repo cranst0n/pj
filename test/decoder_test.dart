@@ -22,6 +22,11 @@ void main() {
     _primitiveTest(decodeInt('x'), {'x': -987}, -987);
   });
 
+  test('Decoder.number', () {
+    _primitiveTest(decodeNum('x'), {'x': 1234}, 1234);
+    _primitiveTest(decodeNum('x'), {'x': -987.65}, -987.65);
+  });
+
   test('Decoder.string', () {
     _primitiveTest(decodeString('x'), {'x': 'hello'}, 'hello');
   });
@@ -29,6 +34,12 @@ void main() {
   test('Decoder.bigint', () {
     _primitiveTest(decodeBigInt('x'), {'x': '1'}, BigInt.one);
     _primitiveTest(decodeBigInt('x'), {'x': '-135790'}, BigInt.from(-135790));
+
+    expect(
+      decodeBigInt('x').decode({'x': '-Q13'}),
+      left<DecodingError, BigInt>(
+          DecodingError.parsingFailure('Could not parse BigInt: -Q13')),
+    );
   });
 
   test('Decoder.object', () {
@@ -41,8 +52,8 @@ void main() {
   });
 
   test('Decoder.dateTime', () {
-    _primitiveTest(decodeDateTime('x'), {'x': '2021-11-17 12:25:38.790927'},
-        DateTime.parse('2021-11-17 12:25:38.790927'));
+    _primitiveTest(decodeDateTime('x'), {'x': '2021-11-17T12:25:38.790927'},
+        DateTime.parse('2021-11-17T12:25:38.790927'));
   });
 
   test('Decoder.duration', () {
@@ -90,25 +101,25 @@ void main() {
   });
 
   test('Decoder.emap', () {
-    Either<String, int> foo(bool b) => b ? right(42) : left('emap left');
+    Either<String, int> foo(int i) => i > 0 ? right(42) : left('emap left');
 
-    Decoder.boolean.emap(foo).decode(true).fold(
+    Decoder.integer.emap(foo).decode(1).fold(
         (err) => fail('emap left should not fail: $err'),
         (actual) => expect(actual, 42));
 
-    Decoder.boolean.emap(foo).decode(false).fold(
+    Decoder.integer.emap(foo).decode(-1).fold(
         (err) => expect(err, const DecodingError('emap left')),
         (actual) => fail('emap right should not succeed: $actual'));
   });
 
   test('Decoder.omap', () {
-    Option<int> foo(bool b) => b ? some(42) : none();
+    Option<int> foo(String s) => s.isNotEmpty ? some(42) : none();
 
-    Decoder.boolean.omap(foo, 'foo none').decode(true).fold(
+    Decoder.string.omap(foo, () => 'foo none').decode('non-empty').fold(
         (err) => fail('omap none should not fail: $err'),
         (actual) => expect(actual, 42));
 
-    Decoder.boolean.omap(foo, 'foo none').decode(false).fold(
+    Decoder.string.omap(foo, () => 'foo none').decode('').fold(
         (err) => expect(err, const DecodingError('foo none')),
         (actual) => fail('omap some should not succeed: $actual'));
   });
@@ -298,7 +309,7 @@ void main() {
 
     Codec.list(Foo.codec).decode(json).fold(
           (err) => fail('Foo list decode should not fail: $err'),
-          (r) => expect(r, const [Foo(1, false), Foo(2, true)]),
+          (fooList) => expect(fooList, const [Foo(1, false), Foo(2, true)]),
         );
   });
 }
@@ -306,5 +317,5 @@ void main() {
 void _primitiveTest<A>(Decoder<A> decoder, dynamic json, A expected) {
   decoder
       .decode(json)
-      .fold((l) => fail(l.reason), (actual) => expect(actual, expected));
+      .fold((err) => fail(err.reason), (actual) => expect(actual, expected));
 }

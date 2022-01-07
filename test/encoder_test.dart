@@ -31,6 +31,11 @@ void main() {
     expect(encodeInt('x').encode(42), {'x': 42});
   });
 
+  test('Encoder.number', () {
+    expect(encodeNum('x').encode(42), {'x': 42});
+    expect(encodeNum('x').encode(-76.54), {'x': -76.54});
+  });
+
   test('Encoder.string', () {
     expect(encodeString('x').encode('hello'), {'x': 'hello'});
   });

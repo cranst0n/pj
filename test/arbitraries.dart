@@ -4,7 +4,7 @@ import 'package:faker/faker.dart';
 import 'models.dart';
 
 class Arbitraries {
-  static Faker _faker = Faker();
+  static final Faker _faker = Faker();
 
   static DateTime dateTime() => DateTime.fromMillisecondsSinceEpoch(
       _faker.randomGenerator.integer(100000000));

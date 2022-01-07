@@ -28,42 +28,39 @@ Encoder<List<A>> encodeList<A>(
 ) =>
     encodeKey(key, Encoder.list(elementEncoder));
 
+Encoder<num> encodeNum(String key) => encodeKey(key, Encoder.number);
+
+Encoder<Map<String, dynamic>> encodeObject(String key) =>
+    encodeKey(key, Encoder.object);
+
 Encoder<String> encodeString(String key) => encodeKey(key, Encoder.string);
 
 /// An [Encoder] provides the ability to convert from a type <A> to JSON.
 class Encoder<A> {
   final Option<String> key;
-  final dynamic Function(A) encodeF;
+  final dynamic Function(A) _encodeF;
 
-  // construction
+  const Encoder._unkeyed(this._encodeF) : key = const None();
 
-  const Encoder._unkeyed(this.encodeF) : key = const None();
-
-  const Encoder._keyed(this.key, this.encodeF);
-
-  // encoding
+  const Encoder._keyed(this.key, this._encodeF);
 
   dynamic encode(A a) => key.fold<dynamic>(
-        () => encodeF(a),
+        () => _encodeF(a),
         (key) => Map.fromEntries(
-          [MapEntry(key, a != null ? encodeF(a) : null)],
+          [MapEntry(key, a != null ? _encodeF(a) : null)],
         ),
       );
 
-  // primitives
+  ///////////////////////////////// Primitives /////////////////////////////////
 
+  static Encoder<BigInt> get bigint => string.contramap((bi) => bi.toString());
   static Encoder<bool> get boolean => _primitive<bool>();
   static Encoder<double> get dubble => _primitive<double>();
   static Encoder<int> get integer => _primitive<int>();
+  static Encoder<num> get number => _primitive<num>();
+  static Encoder<Map<String, dynamic>> get object =>
+      _primitive<Map<String, dynamic>>();
   static Encoder<String> get string => _primitive<String>();
-  static Encoder<BigInt> get bigint => string.contramap((bi) => bi.toString());
-  static Encoder<T> _primitive<T>() => Encoder._unkeyed(id);
-
-  static Encoder<List<A>> list<A>(Encoder<A> elementEncoder) =>
-      Encoder._unkeyed((list) => list.map(elementEncoder.encode).toList());
-
-  static Encoder<IList<A>> ilist<A>(Encoder<A> elementEncoder) =>
-      list(elementEncoder).contramap((il) => il.toList());
 
   static Encoder<DateTime> get dateTime =>
       string.contramap((dt) => dt.toIso8601String());
@@ -71,23 +68,31 @@ class Encoder<A> {
   static Encoder<Duration> get duration =>
       integer.contramap((d) => d.inMicroseconds);
 
-  // combinators
+  static Encoder<List<A>> list<A>(Encoder<A> elementEncoder) =>
+      Encoder._unkeyed((list) => list.map(elementEncoder.encode).toList());
+
+  static Encoder<IList<A>> ilist<A>(Encoder<A> elementEncoder) =>
+      list(elementEncoder).contramap((il) => il.toList());
+
+  static Encoder<T> _primitive<T>() => Encoder._unkeyed(id);
+
+  //////////////////////////////// Combinators /////////////////////////////////
 
   Encoder<B> contramap<B>(A Function(B) f) =>
       Encoder._unkeyed((B b) => encode(f(b)));
-
-  Encoder<Option<A>> get optional =>
-      Encoder._keyed(key, (opt) => opt.fold(() => null, id));
-
-  Encoder<A?> get nullable => Encoder._keyed(key, id);
 
   Encoder<Either<A, B>> either<B>(Encoder<B> encodeB) => Encoder._unkeyed(
       (either) => either.fold((a) => encode(a), (b) => encodeB.encode(b)));
 
   Encoder<A> keyed(String key) => Encoder._keyed(
-      some(key), (a) => Encoder._keyed(this.key, encodeF).encode(a));
+      some(key), (a) => Encoder._keyed(this.key, _encodeF).encode(a));
 
-  // tuples
+  Encoder<A?> get nullable => Encoder._keyed(key, id);
+
+  Encoder<Option<A>> get optional =>
+      Encoder._keyed(key, (opt) => opt.fold(() => null, id));
+
+  /////////////////////////////////// TupleN ///////////////////////////////////
 
   static Encoder<Tuple2<A, B>> tuple2<A, B>(
     Encoder<A> encodeA,
@@ -352,7 +357,7 @@ class Encoder<A> {
               .encode(tuple.init)
             ..addAll(encodeO.encode(tuple.last)));
 
-  // products
+  ////////////////////////////////// ProductN //////////////////////////////////
 
   static Encoder<A> forProduct2<A, B, C>(
     Encoder<B> encodeB,
