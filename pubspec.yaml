@@ -11,6 +11,7 @@ dependencies:
   dartz:     ^0.10.1
 
 dev_dependencies:
+  coverage:  ^1.0.4
   equatable: ^2.0.3
   faker:     ^2.0.0
   lint:      ^1.0.0

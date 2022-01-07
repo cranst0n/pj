@@ -31,9 +31,12 @@ jobs:
       - name: Run tests
         run: dart test --coverage="coverage"
 
+      - name: Convert coverage to lcov
+        run: dart run coverage:format_coverage --lcov --in=coverage --out=coverage.lcov --packages=.packages --report-on=lib
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./coverage/test
+          files: coverage.lcov
           verbose: true
