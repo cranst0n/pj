@@ -74,19 +74,28 @@ class Codec<A> {
   ///////////////////////////////// Primitives /////////////////////////////////
 
   static Codec<BigInt> get bigint => Codec._(Decoder.bigint, Encoder.bigint);
+
   static Codec<bool> get boolean => Codec._(Decoder.boolean, Encoder.boolean);
+
   static Codec<DateTime> get dateTime =>
       Codec._(Decoder.dateTime, Encoder.dateTime);
+
+  static Codec<double> get dubble => Codec._(Decoder.dubble, Encoder.dubble);
+
   static Codec<Duration> get duration =>
       Codec._(Decoder.duration, Encoder.duration);
-  static Codec<double> get dubble => Codec._(Decoder.dubble, Encoder.dubble);
+
   static Codec<IList<A>> ilist<A>(Codec<A> elementCodec) => Codec._(
       Decoder.ilist(elementCodec.decoder), Encoder.ilist(elementCodec.encoder));
+
   static Codec<int> get integer => Codec._(Decoder.integer, Encoder.integer);
+
   static Codec<List<A>> list<A>(Codec<A> elementCodec) => Codec._(
       Decoder.list(elementCodec.decoder), Encoder.list(elementCodec.encoder));
+
   static Codec<Map<String, dynamic>> get object =>
       Codec._(Decoder.object, Encoder.object);
+
   static Codec<String> get string => Codec._(Decoder.string, Encoder.string);
 
   ////////////////////////////////// ProductN //////////////////////////////////

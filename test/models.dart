@@ -54,10 +54,10 @@ class Baz extends Equatable {
   final List<bool> bools;
   final bool? nullable;
   final String recovered;
-  final DateTime mary;
+  final Map<String, dynamic> mary;
   final DateTime had;
-  final int little;
-  final int lamb;
+  final Duration little;
+  final BigInt lamb;
 
   const Baz(
     this.integer,
@@ -89,10 +89,10 @@ class Baz extends Equatable {
     List<bool> bools,
     bool? nullable,
     String recovered,
-    DateTime mary,
+    Map<String, dynamic> mary,
     DateTime had,
-    int little,
-    int lamb,
+    Duration little,
+    BigInt lamb,
   ) =>
       Baz(integer, maybeString1, maybeString2, dubble, boolean, strings, foos,
           bar, bools, nullable, recovered, mary, had, little, lamb);
@@ -109,10 +109,10 @@ class Baz extends Equatable {
     codecList('bools', Codec.boolean),
     codecKeyed('nullable', Codec.boolean).nullable,
     codecString('recovered').recover('recovered!'),
-    codecDateTime('mary'),
+    codecObject('mary'),
     codecDateTime('had'),
-    codecInt('little'),
-    codecInt('lamb'),
+    codecDuration('little'),
+    codecBigInt('lamb'),
     Baz.apply,
     (baz) => Tuple15(
       baz.integer,

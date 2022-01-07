@@ -36,6 +36,14 @@ void main() {
     expect(encodeNum('x').encode(-76.54), {'x': -76.54});
   });
 
+  test('Encoder.object', () {
+    final object = {
+      'a': 1,
+      'b': {'c': 2}
+    };
+    expect(encodeObject('x').encode(object), {'x': object});
+  });
+
   test('Encoder.string', () {
     expect(encodeString('x').encode('hello'), {'x': 'hello'});
   });

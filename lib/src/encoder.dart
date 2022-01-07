@@ -54,25 +54,31 @@ class Encoder<A> {
   ///////////////////////////////// Primitives /////////////////////////////////
 
   static Encoder<BigInt> get bigint => string.contramap((bi) => bi.toString());
+
   static Encoder<bool> get boolean => _primitive<bool>();
-  static Encoder<double> get dubble => _primitive<double>();
-  static Encoder<int> get integer => _primitive<int>();
-  static Encoder<num> get number => _primitive<num>();
-  static Encoder<Map<String, dynamic>> get object =>
-      _primitive<Map<String, dynamic>>();
-  static Encoder<String> get string => _primitive<String>();
 
   static Encoder<DateTime> get dateTime =>
       string.contramap((dt) => dt.toIso8601String());
 
+  static Encoder<double> get dubble => _primitive<double>();
+
   static Encoder<Duration> get duration =>
       integer.contramap((d) => d.inMicroseconds);
+
+  static Encoder<IList<A>> ilist<A>(Encoder<A> elementEncoder) =>
+      list(elementEncoder).contramap((il) => il.toList());
+
+  static Encoder<int> get integer => _primitive<int>();
 
   static Encoder<List<A>> list<A>(Encoder<A> elementEncoder) =>
       Encoder._unkeyed((list) => list.map(elementEncoder.encode).toList());
 
-  static Encoder<IList<A>> ilist<A>(Encoder<A> elementEncoder) =>
-      list(elementEncoder).contramap((il) => il.toList());
+  static Encoder<num> get number => _primitive<num>();
+
+  static Encoder<Map<String, dynamic>> get object =>
+      _primitive<Map<String, dynamic>>();
+
+  static Encoder<String> get string => _primitive<String>();
 
   static Encoder<T> _primitive<T>() => Encoder._unkeyed(id);
 

@@ -72,22 +72,16 @@ class Decoder<A> {
           .toEither(() => 'Could not parse BigInt: $s'))
       .handleErrorWith(
           (err) => Decoder.error(DecodingError.parsingFailure(err.reason)));
+
   static Decoder<bool> get boolean => _primitive<bool>();
-  static Decoder<double> get dubble => _primitive<double>();
-  static Decoder<int> get integer => _primitive<int>();
-  static Decoder<num> get number => _primitive<num>();
-  static Decoder<Map<String, dynamic>> get object =>
-      _primitive<Map<String, dynamic>>();
-  static Decoder<String> get string => _primitive<String>();
 
   static Decoder<DateTime> get dateTime => string.emap((str) =>
       catching(() => DateTime.parse(str)).leftMap((err) => err.toString()));
 
+  static Decoder<double> get dubble => _primitive<double>();
+
   static Decoder<Duration> get duration =>
       integer.map((micros) => Duration(microseconds: micros));
-
-  static Decoder<List<A>> list<A>(Decoder<A> elementDecoder) =>
-      ilist(elementDecoder).map((l) => l.toList());
 
   static Decoder<IList<A>> ilist<A>(Decoder<A> elementDecoder) =>
       _primitive<List<dynamic>>().flatMap(
@@ -97,6 +91,18 @@ class Decoder<A> {
           ),
         ),
       );
+
+  static Decoder<int> get integer => _primitive<int>();
+
+  static Decoder<List<A>> list<A>(Decoder<A> elementDecoder) =>
+      ilist(elementDecoder).map((l) => l.toList());
+
+  static Decoder<num> get number => _primitive<num>();
+
+  static Decoder<Map<String, dynamic>> get object =>
+      _primitive<Map<String, dynamic>>();
+
+  static Decoder<String> get string => _primitive<String>();
 
   static Decoder<T> _primitive<T>() => Decoder._unkeyed((json) => json == null
       ? left(DecodingError.missingField(''))

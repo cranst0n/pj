@@ -257,10 +257,14 @@ void main() {
       },
       'bools': [true, false, false],
       'recovered': 1.23, // double field expected to be a string
-      'mary': '1970-01-01 00:00:10.000Z',
+      'mary': {
+        'a': 123,
+        'b': 'abc',
+        'c': true,
+      },
       'had': '1970-01-01 00:00:50.000Z',
-      'little': 42,
-      'lamb': -42,
+      'little': 1234567890,
+      'lamb': "-42",
     };
 
     Baz.codec.decode(test).fold(
@@ -279,10 +283,10 @@ void main() {
                 const [true, false, false],
                 null,
                 'recovered!',
-                DateTime.fromMillisecondsSinceEpoch(10000, isUtc: true),
+                const {'a': 123, 'b': 'abc', 'c': true},
                 DateTime.fromMillisecondsSinceEpoch(50000, isUtc: true),
-                42,
-                -42),
+                const Duration(microseconds: 1234567890),
+                BigInt.parse("-42")),
           ),
         );
   });

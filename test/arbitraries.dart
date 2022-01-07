@@ -9,6 +9,8 @@ class Arbitraries {
   static DateTime dateTime() => DateTime.fromMillisecondsSinceEpoch(
       _faker.randomGenerator.integer(100000000));
 
+  static BigInt bigInt() => BigInt.from(integer());
+
   static bool boolean() => _faker.randomGenerator.boolean();
 
   static int integer() => _faker.randomGenerator.integer(999999);
@@ -37,9 +39,13 @@ class Arbitraries {
         List.generate(25, (_) => boolean()),
         true,
         'recovered',
+        {
+          'a': integer(),
+          'b': string(),
+          'c': boolean(),
+        },
         dateTime(),
-        dateTime(),
-        integer(),
-        integer(),
+        Duration(seconds: integer()),
+        bigInt(),
       );
 }

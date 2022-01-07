@@ -6,9 +6,29 @@ import 'arbitraries.dart';
 import 'models.dart';
 
 void main() {
+  test('Codec.bigint', () {
+    _codecTest(Codec.bigint, BigInt.one);
+    _codecTest(Codec.bigint, BigInt.from(1234567890));
+  });
+
   test('Codec.boolean', () {
-    _codecTest(Codec.boolean.keyed('foo'), true);
-    _codecTest(Codec.boolean.keyed('foo'), false);
+    _codecTest(Codec.boolean, true);
+    _codecTest(Codec.boolean, false);
+  });
+
+  test('Codec.dateTime', () {
+    _codecTest(Codec.dateTime, DateTime.now());
+    _codecTest(Codec.dateTime, DateTime.fromMillisecondsSinceEpoch(0));
+  });
+
+  test('Codec.dubble', () {
+    _codecTest(Codec.dubble, 3.14);
+    _codecTest(Codec.dubble, -8736.234);
+  });
+
+  test('Codec.duration', () {
+    _codecTest(Codec.duration, Duration.zero);
+    _codecTest(Codec.duration, const Duration(hours: 24));
   });
 
   test('Codec.xmap', () {
@@ -44,7 +64,7 @@ void main() {
 
 void _codecTest<A>(Codec<A> codec, A value) {
   codec.decode(codec.encode(value)).fold(
-        (err) => fail('Codec.boolean failed: $err'),
+        (err) => fail('${codec.runtimeType} failed: $err'),
         (decoded) => expect(decoded, value),
       );
 }
