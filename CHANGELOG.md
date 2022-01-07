@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.0.4
+
+- Add some missing primives.
+- Various bug fixes and improvements.
+
 ## 0.0.3
 
 - Add Codec API.
