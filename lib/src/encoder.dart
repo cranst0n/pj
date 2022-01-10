@@ -1,40 +1,5 @@
 import 'package:dartz/dartz.dart';
 
-Encoder<A> encodeKey<A>(String key, Encoder<A> encoder) => encoder.keyed(key);
-
-Encoder<BigInt> encodeBigInt(String key) => encodeKey(key, Encoder.bigint);
-
-Encoder<bool> encodeBool(String key) => encodeKey(key, Encoder.boolean);
-
-Encoder<DateTime> encodeDateTime(String key) =>
-    encodeKey(key, Encoder.dateTime);
-
-Encoder<double> encodeDouble(String key) => encodeKey(key, Encoder.dubble);
-
-Encoder<Duration> encodeDuration(String key) =>
-    encodeKey(key, Encoder.duration);
-
-Encoder<int> encodeInt(String key) => encodeKey(key, Encoder.integer);
-
-Encoder<IList<A>> encodeIList<A>(
-  String key,
-  Encoder<A> elementEncoder,
-) =>
-    encodeKey(key, Encoder.ilist(elementEncoder));
-
-Encoder<List<A>> encodeList<A>(
-  String key,
-  Encoder<A> elementEncoder,
-) =>
-    encodeKey(key, Encoder.list(elementEncoder));
-
-Encoder<num> encodeNum(String key) => encodeKey(key, Encoder.number);
-
-Encoder<Map<String, dynamic>> encodeObject(String key) =>
-    encodeKey(key, Encoder.object);
-
-Encoder<String> encodeString(String key) => encodeKey(key, Encoder.string);
-
 /// An [Encoder] provides the ability to convert from a type <A> to JSON.
 class Encoder<A> {
   final Option<String> key;
@@ -51,7 +16,9 @@ class Encoder<A> {
         ),
       );
 
+  //////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////// Primitives /////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
 
   static Encoder<BigInt> get bigint => string.contramap((bi) => bi.toString());
 
@@ -65,12 +32,12 @@ class Encoder<A> {
   static Encoder<Duration> get duration =>
       integer.contramap((d) => d.inMicroseconds);
 
-  static Encoder<IList<A>> ilist<A>(Encoder<A> elementEncoder) =>
-      list(elementEncoder).contramap((il) => il.toList());
+  static Encoder<IList<A>> ilistOf<A>(Encoder<A> elementEncoder) =>
+      listOf(elementEncoder).contramap((il) => il.toList());
 
   static Encoder<int> get integer => _primitive<int>();
 
-  static Encoder<List<A>> list<A>(Encoder<A> elementEncoder) =>
+  static Encoder<List<A>> listOf<A>(Encoder<A> elementEncoder) =>
       Encoder._unkeyed((list) => list.map(elementEncoder.encode).toList());
 
   static Encoder<num> get number => _primitive<num>();
@@ -82,7 +49,9 @@ class Encoder<A> {
 
   static Encoder<T> _primitive<T>() => Encoder._unkeyed(id);
 
+  //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////// Combinators /////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
 
   Encoder<B> contramap<B>(A Function(B) f) =>
       Encoder._unkeyed((B b) => encode(f(b)));
@@ -98,7 +67,9 @@ class Encoder<A> {
   Encoder<Option<A>> get optional =>
       Encoder._keyed(key, (opt) => opt.fold(() => null, id));
 
+  //////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////// TupleN ///////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
 
   // TODO: https://github.com/cranst0n/pj/issues/1
   // ignore_for_file: avoid_dynamic_calls
@@ -366,7 +337,9 @@ class Encoder<A> {
               .encode(tuple.init)
             ..addAll(encodeO.encode(tuple.last)));
 
+  //////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////// ProductN //////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
 
   static Encoder<A> forProduct2<A, B, C>(
     Encoder<B> encodeB,

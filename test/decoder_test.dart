@@ -1,50 +1,52 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
 import 'package:pj/pj.dart';
+import 'package:pj/syntax.dart';
 import 'package:test/test.dart';
 
 import 'models.dart';
 
 void main() {
   test('Decoder.boolean', () {
-    _primitiveTest(decodeBool('x'), {'x': true}, true);
-    _primitiveTest(decodeBool('x'), {'x': false}, false);
+    _primitiveTest(boolean('x').decoder, {'x': true}, true);
+    _primitiveTest(boolean('x').decoder, {'x': false}, false);
   });
 
   test('Decoder.dubble', () {
-    _primitiveTest(decodeDouble('x'), {'x': 1.234}, 1.234);
-    _primitiveTest(decodeDouble('x'), {'x': -9.87}, -9.87);
+    _primitiveTest(dubble('x').decoder, {'x': 1.234}, 1.234);
+    _primitiveTest(dubble('x').decoder, {'x': -9.87}, -9.87);
   });
 
   test('Decoder.integer', () {
-    _primitiveTest(decodeInt('x'), {'x': 1234}, 1234);
-    _primitiveTest(decodeInt('x'), {'x': -987}, -987);
+    _primitiveTest(integer('x').decoder, {'x': 1234}, 1234);
+    _primitiveTest(integer('x').decoder, {'x': -987}, -987);
   });
 
   test('Decoder.number', () {
-    _primitiveTest(decodeNum('x'), {'x': 1234}, 1234);
-    _primitiveTest(decodeNum('x'), {'x': -987.65}, -987.65);
+    _primitiveTest(number('x').decoder, {'x': 1234}, 1234);
+    _primitiveTest(number('x').decoder, {'x': -987.65}, -987.65);
   });
 
   test('Decoder.string', () {
-    _primitiveTest(decodeString('x'), {'x': 'hello'}, 'hello');
+    _primitiveTest(string('x').decoder, {'x': 'hello'}, 'hello');
   });
 
   test('Decoder.bigint', () {
-    _primitiveTest(decodeBigInt('x'), {'x': '1'}, BigInt.one);
-    _primitiveTest(decodeBigInt('x'), {'x': '-135790'}, BigInt.from(-135790));
+    _primitiveTest(bigInt('x').decoder, {'x': '1'}, BigInt.one);
+    _primitiveTest(bigInt('x').decoder, {'x': '-135790'}, BigInt.from(-135790));
 
     expect(
-      decodeBigInt('x').decode({'x': '-Q13'}),
+      bigInt('x').decode({'x': '-Q13'}),
       left<DecodingError, BigInt>(
           DecodingError.parsingFailure('Could not parse BigInt: -Q13')),
     );
   });
 
   test('Decoder.object', () {
-    _primitiveTest(decodeObject('x'), {
-      'x': {'foo': 1, 'bar': true}
+    _primitiveTest(object('obj').decoder, {
+      'obj': {'foo': 1, 'bar': true}
     }, {
       'foo': 1,
       'bar': true
@@ -52,18 +54,18 @@ void main() {
   });
 
   test('Decoder.dateTime', () {
-    _primitiveTest(decodeDateTime('x'), {'x': '2021-11-17T12:25:38.790927'},
+    _primitiveTest(dateTime('x').decoder, {'x': '2021-11-17T12:25:38.790927'},
         DateTime.parse('2021-11-17T12:25:38.790927'));
   });
 
   test('Decoder.duration', () {
-    _primitiveTest(decodeDuration('x'), {'x': 35500000},
+    _primitiveTest(duration('x').decoder, {'x': 35500000},
         const Duration(seconds: 35, milliseconds: 500));
   });
 
   test('Decoder.ilist', () {
     _primitiveTest(
-        decodeIList('x', Decoder.string),
+        ilistOf(Codec.string)('x').decoder,
         {
           'x': ['a', 'b', 'c']
         },
@@ -71,7 +73,7 @@ void main() {
   });
 
   test('Decoder.list', () {
-    _primitiveTest(decodeList('x', Decoder.integer), {
+    _primitiveTest(listOf(Codec.integer)('x').decoder, {
       'x': [0, 1, 2]
     }, [
       0,
@@ -79,6 +81,21 @@ void main() {
       2
     ]);
   });
+
+  test('Decoder.list with keyed decoder', overridePrint(() {
+    final decoder = listOf(string('bar'))('foo').decoder;
+
+    decoder.decode(['a', 'b', 'c']).fold(
+      (err) {
+        // Make sure the warning is given
+        expect(printLog, [
+          'warn: Passing a keyed (bar) decoder to an [i]List decoder.',
+        ]);
+        expect(err, const DecodingError("Expected value at field: 'foo'"));
+      },
+      (list) => fail('this should not happen!'),
+    );
+  }));
 
   test('Decoder.lift', () {
     Decoder.lift(right(42)).decode(['x', 'y', 'z']).fold(
@@ -94,7 +111,7 @@ void main() {
   });
 
   test('Decoder.as', () {
-    decodeKey('x', Decoder.integer.as(42)).decode({'x': 0}).fold(
+    integer('x').decoder.as(42).decode({'x': 0}).fold(
       (err) => fail('Decoder.as should not fail: $err'),
       (actual) => expect(actual, 42),
     );
@@ -125,7 +142,7 @@ void main() {
   });
 
   test('Decoder.fold', () {
-    final decoder = decodeInt('x').fold((_) => 'left', (_) => 'right');
+    final decoder = integer('x').decoder.fold((_) => 'left', (_) => 'right');
 
     decoder.decode({'x': 0}).fold(
       (err) => fail('fold should not fail: $err'),
@@ -139,12 +156,12 @@ void main() {
   });
 
   test('Decoder.handleError', () {
-    decodeInt('x').handleError((_) => 24).decode({'x': 'string'}).fold(
+    integer('x').decoder.handleError((_) => 24).decode({'x': 'string'}).fold(
       (err) => fail('handleError should not fail: $err'),
       (actual) => expect(actual, 24),
     );
 
-    decodeInt('x').handleError((_) => 24).decode({'x': 42}).fold(
+    integer('x').decoder.handleError((_) => 24).decode({'x': 42}).fold(
       (err) => fail('handleError should not fail: $err'),
       (actual) => expect(actual, 42),
     );
@@ -159,12 +176,12 @@ void main() {
       }
     }
 
-    decodeInt('x').handleErrorWith(handler).decode({'x': 'str'}).fold(
+    integer('x').decoder.handleErrorWith(handler).decode({'x': 'str'}).fold(
       (err) => fail('handleErrorWith error should not fail: $err'),
       (actual) => expect(actual, 123),
     );
 
-    decodeInt('x').handleErrorWith(handler).decode({'y': 'str'}).fold(
+    integer('x').decoder.handleErrorWith(handler).decode({'y': 'str'}).fold(
       (err) => expect(err, const DecodingError('Unrecoverable')),
       (actual) => fail('handleErrorWith success failed: $actual'),
     );
@@ -197,7 +214,7 @@ void main() {
   });
 
   test('Decoder.either', () {
-    final decoder = decodeKey('x', Decoder.integer.either(Decoder.boolean));
+    final decoder = Decoder.integer.either(Decoder.boolean).keyed('x');
 
     decoder.decode({'x': 42}).fold(
       (err) => fail('either error should not fail: $err'),
@@ -211,30 +228,30 @@ void main() {
   });
 
   test('Decoder.either behavior', () {
-    final encoder = encodeInt('a').either(encodeString('a'));
+    final encoder =
+        Encoder.integer.keyed('a').either(Encoder.string.keyed('a'));
 
     expect(encoder.encode(left(42)), {'a': 42});
     expect(encoder.encode(right('foo')), {'a': 'foo'});
 
     expect(
-      decodeInt('a')
-          .either(decodeString('a'))
+      integer('a')
+          .decoder
+          .either(string('a').decoder)
           .decode(encoder.encode(right('42'))),
       right<DecodingError, Either<int, String>>(right('42')),
     );
   });
 
   test('Decoder.withErrorMessage', () {
-    decodeKey('x', Decoder.boolean)
-        .withErrorMessage('fubar')
-        .decode({'y': 123}).fold(
+    'x'.of(Codec.boolean).withErrorMessage('fubar').decode({'y': 123}).fold(
       (err) => expect(err.reason, 'fubar'),
       (actual) => fail('withEitherMesage error should not succeed: $actual'),
     );
   });
 
   test('Decoder.at (fail)', () {
-    decodeKey('x', Decoder.boolean).decode([true, false, true]).fold(
+    'x'.of(Codec.boolean).decode([true, false, true]).fold(
       (err) => expect(err, const DecodingError("Expected value at field: 'x'")),
       (actual) => fail('at error should not succeed: $actual'),
     );
@@ -298,7 +315,7 @@ void main() {
       {'a': 3, 'b': false},
     ];
 
-    Codec.list(Foo.codec).decode(testJson).fold(
+    Codec.listOf(Foo.codec).decode(testJson).fold(
           (err) => fail('List<Foo> decode should not fail: $err'),
           (actual) => expect(
             actual,
@@ -311,7 +328,7 @@ void main() {
     const str = '[{"a":1, "b":false}, {"a":2, "b":true}]';
     final json = jsonDecode(str);
 
-    Codec.list(Foo.codec).decode(json).fold(
+    Codec.listOf(Foo.codec).decode(json).fold(
           (err) => fail('Foo list decode should not fail: $err'),
           (fooList) => expect(fooList, const [Foo(1, false), Foo(2, true)]),
         );
@@ -323,3 +340,13 @@ void _primitiveTest<A>(Decoder<A> decoder, dynamic json, A expected) {
       .decode(json)
       .fold((err) => fail(err.reason), (actual) => expect(actual, expected));
 }
+
+final printLog = [];
+
+void Function() overridePrint(void Function() testFn) => () {
+      final spec = ZoneSpecification(print: (_, __, ___, String msg) {
+        // Add to log instead of printing to stdout
+        printLog.add(msg);
+      });
+      return Zone.current.fork(specification: spec).run<void>(testFn);
+    };

@@ -1,39 +1,39 @@
 import 'package:dartz/dartz.dart';
 import 'package:pj/pj.dart';
+import 'package:pj/syntax.dart';
 import 'package:test/test.dart';
 
 import 'models.dart';
 
 void main() {
   test('Encoder.boolean', () {
-    expect(encodeBool('x').encode(true), {'x': true});
+    expect('x'.boolean.encode(true), {'x': true});
   });
 
   test('Encoder.dateTime', () {
     expect(
-        encodeDateTime('x')
+        'x'
+            .dateTime
             .encode(DateTime.fromMillisecondsSinceEpoch(0, isUtc: true)),
         {'x': '1970-01-01T00:00:00.000Z'});
   });
 
   test('Encoder.dubble', () {
-    expect(encodeDouble('x').encode(1.23), {'x': 1.23});
+    expect('x'.dubble.encode(1.23), {'x': 1.23});
   });
 
   test('Encoder.duration', () {
-    expect(
-        encodeDuration('x')
-            .encode(const Duration(seconds: 1, milliseconds: 100)),
+    expect('x'.duration.encode(const Duration(seconds: 1, milliseconds: 100)),
         {'x': 1100000});
   });
 
   test('Encoder.integer', () {
-    expect(encodeInt('x').encode(42), {'x': 42});
+    expect('x'.integer.encode(42), {'x': 42});
   });
 
   test('Encoder.number', () {
-    expect(encodeNum('x').encode(42), {'x': 42});
-    expect(encodeNum('x').encode(-76.54), {'x': -76.54});
+    expect('x'.number.encode(42), {'x': 42});
+    expect('x'.number.encode(-76.54), {'x': -76.54});
   });
 
   test('Encoder.object', () {
@@ -41,97 +41,68 @@ void main() {
       'a': 1,
       'b': {'c': 2}
     };
-    expect(encodeObject('x').encode(object), {'x': object});
+
+    expect('x'.object.encode(object), {'x': object});
   });
 
   test('Encoder.string', () {
-    expect(encodeString('x').encode('hello'), {'x': 'hello'});
+    expect('x'.string.encode('hello'), {'x': 'hello'});
   });
 
   test('Encoder.bigint', () {
-    expect(encodeBigInt('x').encode(BigInt.two), {'x': '2'});
+    expect('x'.bigInt.encode(BigInt.two), {'x': '2'});
   });
 
   test('Encoder.list', () {
-    expect(encodeList('x', Encoder.string).encode(['hello', 'world']), {
+    expect('x'.listOf(Codec.string).encode(['hello', 'world']), {
       'x': ['hello', 'world']
     });
   });
 
   test('Encoder.ilist', () {
-    expect(
-        encodeIList('x', Encoder.string).encode(IList.from(['hello', 'world'])),
-        {
-          'x': ['hello', 'world']
-        });
+    expect('x'.ilistOf(Codec.string).encode(IList.from(['hello', 'world'])), {
+      'x': ['hello', 'world']
+    });
   });
 
   test('Encoder.optional', () {
-    expect(encodeKey('x', Encoder.string.optional).encode(some('hello')),
-        {'x': 'hello'});
-    expect(encodeKey('x', Encoder.string.optional).encode(none()), {'x': null});
+    expect('x'.string.optional.encode(some('hello')), {'x': 'hello'});
+    expect('x'.string.optional.encode(none()), {'x': null});
   });
 
   test('Encoder.nullable', () {
-    expect(encodeKey('x', Encoder.string.nullable).encode('hello'),
-        {'x': 'hello'});
-    expect(encodeKey('x', Encoder.string.nullable).encode(null), {'x': null});
+    expect('x'.string.nullable.encode('hello'), {'x': 'hello'});
+    expect('x'.string.nullable.encode(null), {'x': null});
   });
 
   test('Encoder.either', () {
-    final encoder = encodeKey('x', Encoder.string.either(Encoder.integer));
+    final encoder = 'x'.string.encoder.either('x'.integer.encoder);
 
     expect(encoder.encode(right(42)), {'x': 42});
     expect(encoder.encode(left('hello')), {'x': 'hello'});
   });
 
   test('Encoder.contramap', () {
-    expect(
-      encodeInt('a').contramap<String>(int.parse).encode('42'),
-      {'a': 42},
-    );
+    expect('a'.integer.encoder.contramap<String>(int.parse).encode('42'),
+        {'a': 42});
   });
 
   test('Encoder.optional', () {
-    expect(
-      encodeInt('a').optional.encode(some(42)),
-      {'a': 42},
-    );
-
-    expect(
-      encodeInt('a').optional.encode(none()),
-      {'a': null},
-    );
+    expect('a'.integer.optional.encode(some(42)), {'a': 42});
+    expect('a'.integer.optional.encode(none()), {'a': null});
   });
 
   test('Encoder.nullable', () {
-    expect(
-      encodeInt('a').nullable.encode(42),
-      {'a': 42},
-    );
-
-    expect(
-      encodeInt('a').nullable.encode(null),
-      {'a': null},
-    );
+    expect('a'.integer.nullable.encode(42), {'a': 42});
+    expect('a'.integer.nullable.encode(null), {'a': null});
   });
 
   test('Encoder.keyed', () {
-    expect(
-        encodeKey('foo', Encoder.integer.keyed('key')).keyed('key2').encode(2),
-        {
-          'key2': {
-            'foo': {'key': 2}
-          }
-        });
-
-    expect(
-        encodeKey('foo', Encoder.integer.keyed('key').keyed('key2')).encode(2),
-        {
-          'foo': {
-            'key2': {'key': 2}
-          }
-        });
+    expect('foo'.integer.keyed('key').keyed('key2').encode(2), {
+      'key2': {
+        'key': {'foo': 2}
+      }
+    });
   });
 
   test('Encode Bar', () {
@@ -143,8 +114,8 @@ void main() {
   test('Encode List<Bar>', () {
     const original = [Bar(1.2, 's0'), Bar(3.4, 's1'), Bar(5.6, 's2')];
 
-    final decoded = Decoder.list(Bar.codec.decoder)
-        .decode(Encoder.list(Bar.codec.encoder).encode(original));
+    final decoded = Decoder.listOf(Bar.codec.decoder)
+        .decode(Encoder.listOf(Bar.codec.encoder).encode(original));
 
     decoded.fold(
       (err) => fail('Bar roundtrip decode should not fail: $err'),
@@ -158,8 +129,8 @@ void main() {
       DateTime.fromMillisecondsSinceEpoch(1000),
     ];
 
-    final decoded = Decoder.list(Decoder.dateTime)
-        .decode(Encoder.list(Encoder.dateTime).encode(expected));
+    final decoded = Decoder.listOf(Decoder.dateTime)
+        .decode(Encoder.listOf(Encoder.dateTime).encode(expected));
 
     decoded.fold(
       (err) => fail('List<DateTime> decode should not fail: $err'),
@@ -169,22 +140,19 @@ void main() {
 
   test('Encoder.forProduct2', () {
     final encoder = Encoder.forProduct2(
-      encodeKey('a', Encoder.integer),
-      encodeKey('b', Encoder.integer),
+      'a'.integer.encoder,
+      'b'.integer.encoder,
       id,
     );
 
-    expect(
-      encoder.encode(tuple2(1, 2)),
-      {'a': 1, 'b': 2},
-    );
+    expect(encoder.encode(tuple2(1, 2)), {'a': 1, 'b': 2});
   });
 
   test('Encoder.forProduct3', () {
     final encoder = Encoder.forProduct3(
-      encodeKey('a', Encoder.integer),
-      encodeKey('b', Encoder.integer),
-      encodeKey('c', Encoder.integer),
+      'a'.integer.encoder,
+      'b'.integer.encoder,
+      'c'.integer.encoder,
       id,
     );
 
@@ -196,10 +164,10 @@ void main() {
 
   test('Encoder.forProduct4', () {
     final encoder = Encoder.forProduct4(
-      encodeKey('a', Encoder.integer),
-      encodeKey('b', Encoder.integer),
-      encodeKey('c', Encoder.integer),
-      encodeKey('d', Encoder.integer),
+      'a'.integer.encoder,
+      'b'.integer.encoder,
+      'c'.integer.encoder,
+      'd'.integer.encoder,
       id,
     );
 
@@ -211,11 +179,11 @@ void main() {
 
   test('Encoder.forProduct5', () {
     final encoder = Encoder.forProduct5(
-      encodeKey('a', Encoder.integer),
-      encodeKey('b', Encoder.integer),
-      encodeKey('c', Encoder.integer),
-      encodeKey('d', Encoder.integer),
-      encodeKey('e', Encoder.integer),
+      'a'.integer.encoder,
+      'b'.integer.encoder,
+      'c'.integer.encoder,
+      'd'.integer.encoder,
+      'e'.integer.encoder,
       id,
     );
 
@@ -227,12 +195,12 @@ void main() {
 
   test('Encoder.forProduct6', () {
     final encoder = Encoder.forProduct6(
-      encodeKey('a', Encoder.integer),
-      encodeKey('b', Encoder.integer),
-      encodeKey('c', Encoder.integer),
-      encodeKey('d', Encoder.integer),
-      encodeKey('e', Encoder.integer),
-      encodeKey('f', Encoder.integer),
+      'a'.integer.encoder,
+      'b'.integer.encoder,
+      'c'.integer.encoder,
+      'd'.integer.encoder,
+      'e'.integer.encoder,
+      'f'.integer.encoder,
       id,
     );
 
@@ -244,13 +212,13 @@ void main() {
 
   test('Encoder.forProduct7', () {
     final encoder = Encoder.forProduct7(
-      encodeKey('a', Encoder.integer),
-      encodeKey('b', Encoder.integer),
-      encodeKey('c', Encoder.integer),
-      encodeKey('d', Encoder.integer),
-      encodeKey('e', Encoder.integer),
-      encodeKey('f', Encoder.integer),
-      encodeKey('g', Encoder.integer),
+      'a'.integer.encoder,
+      'b'.integer.encoder,
+      'c'.integer.encoder,
+      'd'.integer.encoder,
+      'e'.integer.encoder,
+      'f'.integer.encoder,
+      'g'.integer.encoder,
       id,
     );
 
@@ -262,14 +230,14 @@ void main() {
 
   test('Encoder.forProduct8', () {
     final encoder = Encoder.forProduct8(
-      encodeKey('a', Encoder.integer),
-      encodeKey('b', Encoder.integer),
-      encodeKey('c', Encoder.integer),
-      encodeKey('d', Encoder.integer),
-      encodeKey('e', Encoder.integer),
-      encodeKey('f', Encoder.integer),
-      encodeKey('g', Encoder.integer),
-      encodeKey('h', Encoder.integer),
+      'a'.integer.encoder,
+      'b'.integer.encoder,
+      'c'.integer.encoder,
+      'd'.integer.encoder,
+      'e'.integer.encoder,
+      'f'.integer.encoder,
+      'g'.integer.encoder,
+      'h'.integer.encoder,
       id,
     );
 
@@ -281,15 +249,15 @@ void main() {
 
   test('Encoder.forProduct9', () {
     final encoder = Encoder.forProduct9(
-      encodeKey('a', Encoder.integer),
-      encodeKey('b', Encoder.integer),
-      encodeKey('c', Encoder.integer),
-      encodeKey('d', Encoder.integer),
-      encodeKey('e', Encoder.integer),
-      encodeKey('f', Encoder.integer),
-      encodeKey('g', Encoder.integer),
-      encodeKey('h', Encoder.integer),
-      encodeKey('i', Encoder.integer),
+      'a'.integer.encoder,
+      'b'.integer.encoder,
+      'c'.integer.encoder,
+      'd'.integer.encoder,
+      'e'.integer.encoder,
+      'f'.integer.encoder,
+      'g'.integer.encoder,
+      'h'.integer.encoder,
+      'i'.integer.encoder,
       id,
     );
 
@@ -301,16 +269,16 @@ void main() {
 
   test('Encoder.forProduct10', () {
     final encoder = Encoder.forProduct10(
-      encodeKey('a', Encoder.integer),
-      encodeKey('b', Encoder.integer),
-      encodeKey('c', Encoder.integer),
-      encodeKey('d', Encoder.integer),
-      encodeKey('e', Encoder.integer),
-      encodeKey('f', Encoder.integer),
-      encodeKey('g', Encoder.integer),
-      encodeKey('h', Encoder.integer),
-      encodeKey('i', Encoder.integer),
-      encodeKey('j', Encoder.integer),
+      'a'.integer.encoder,
+      'b'.integer.encoder,
+      'c'.integer.encoder,
+      'd'.integer.encoder,
+      'e'.integer.encoder,
+      'f'.integer.encoder,
+      'g'.integer.encoder,
+      'h'.integer.encoder,
+      'i'.integer.encoder,
+      'j'.integer.encoder,
       id,
     );
 
@@ -333,17 +301,17 @@ void main() {
 
   test('Encoder.forProduct11', () {
     final encoder = Encoder.forProduct11(
-      encodeKey('a', Encoder.integer),
-      encodeKey('b', Encoder.integer),
-      encodeKey('c', Encoder.integer),
-      encodeKey('d', Encoder.integer),
-      encodeKey('e', Encoder.integer),
-      encodeKey('f', Encoder.integer),
-      encodeKey('g', Encoder.integer),
-      encodeKey('h', Encoder.integer),
-      encodeKey('i', Encoder.integer),
-      encodeKey('j', Encoder.integer),
-      encodeKey('k', Encoder.integer),
+      'a'.integer.encoder,
+      'b'.integer.encoder,
+      'c'.integer.encoder,
+      'd'.integer.encoder,
+      'e'.integer.encoder,
+      'f'.integer.encoder,
+      'g'.integer.encoder,
+      'h'.integer.encoder,
+      'i'.integer.encoder,
+      'j'.integer.encoder,
+      'k'.integer.encoder,
       id,
     );
 
@@ -367,18 +335,18 @@ void main() {
 
   test('Encoder.forProduct12', () {
     final encoder = Encoder.forProduct12(
-      encodeKey('a', Encoder.integer),
-      encodeKey('b', Encoder.integer),
-      encodeKey('c', Encoder.integer),
-      encodeKey('d', Encoder.integer),
-      encodeKey('e', Encoder.integer),
-      encodeKey('f', Encoder.integer),
-      encodeKey('g', Encoder.integer),
-      encodeKey('h', Encoder.integer),
-      encodeKey('i', Encoder.integer),
-      encodeKey('j', Encoder.integer),
-      encodeKey('k', Encoder.integer),
-      encodeKey('l', Encoder.integer),
+      'a'.integer.encoder,
+      'b'.integer.encoder,
+      'c'.integer.encoder,
+      'd'.integer.encoder,
+      'e'.integer.encoder,
+      'f'.integer.encoder,
+      'g'.integer.encoder,
+      'h'.integer.encoder,
+      'i'.integer.encoder,
+      'j'.integer.encoder,
+      'k'.integer.encoder,
+      'l'.integer.encoder,
       id,
     );
 
@@ -403,19 +371,19 @@ void main() {
 
   test('Encoder.forProduct13', () {
     final encoder = Encoder.forProduct13(
-      encodeKey('a', Encoder.integer),
-      encodeKey('b', Encoder.integer),
-      encodeKey('c', Encoder.integer),
-      encodeKey('d', Encoder.integer),
-      encodeKey('e', Encoder.integer),
-      encodeKey('f', Encoder.integer),
-      encodeKey('g', Encoder.integer),
-      encodeKey('h', Encoder.integer),
-      encodeKey('i', Encoder.integer),
-      encodeKey('j', Encoder.integer),
-      encodeKey('k', Encoder.integer),
-      encodeKey('l', Encoder.integer),
-      encodeKey('m', Encoder.integer),
+      'a'.integer.encoder,
+      'b'.integer.encoder,
+      'c'.integer.encoder,
+      'd'.integer.encoder,
+      'e'.integer.encoder,
+      'f'.integer.encoder,
+      'g'.integer.encoder,
+      'h'.integer.encoder,
+      'i'.integer.encoder,
+      'j'.integer.encoder,
+      'k'.integer.encoder,
+      'l'.integer.encoder,
+      'm'.integer.encoder,
       id,
     );
 
@@ -441,20 +409,20 @@ void main() {
 
   test('Encoder.forProduct14', () {
     final encoder = Encoder.forProduct14(
-      encodeKey('a', Encoder.integer),
-      encodeKey('b', Encoder.integer),
-      encodeKey('c', Encoder.integer),
-      encodeKey('d', Encoder.integer),
-      encodeKey('e', Encoder.integer),
-      encodeKey('f', Encoder.integer),
-      encodeKey('g', Encoder.integer),
-      encodeKey('h', Encoder.integer),
-      encodeKey('i', Encoder.integer),
-      encodeKey('j', Encoder.integer),
-      encodeKey('k', Encoder.integer),
-      encodeKey('l', Encoder.integer),
-      encodeKey('m', Encoder.integer),
-      encodeKey('n', Encoder.integer),
+      'a'.integer.encoder,
+      'b'.integer.encoder,
+      'c'.integer.encoder,
+      'd'.integer.encoder,
+      'e'.integer.encoder,
+      'f'.integer.encoder,
+      'g'.integer.encoder,
+      'h'.integer.encoder,
+      'i'.integer.encoder,
+      'j'.integer.encoder,
+      'k'.integer.encoder,
+      'l'.integer.encoder,
+      'm'.integer.encoder,
+      'n'.integer.encoder,
       id,
     );
 
@@ -481,21 +449,21 @@ void main() {
 
   test('Encoder.forProduct15', () {
     final encoder = Encoder.forProduct15(
-      encodeKey('a', Encoder.integer),
-      encodeKey('b', Encoder.integer),
-      encodeKey('c', Encoder.integer),
-      encodeKey('d', Encoder.integer),
-      encodeKey('e', Encoder.integer),
-      encodeKey('f', Encoder.integer),
-      encodeKey('g', Encoder.integer),
-      encodeKey('h', Encoder.integer),
-      encodeKey('i', Encoder.integer),
-      encodeKey('j', Encoder.integer),
-      encodeKey('k', Encoder.integer),
-      encodeKey('l', Encoder.integer),
-      encodeKey('m', Encoder.integer),
-      encodeKey('n', Encoder.integer),
-      encodeKey('o', Encoder.integer),
+      'a'.integer.encoder,
+      'b'.integer.encoder,
+      'c'.integer.encoder,
+      'd'.integer.encoder,
+      'e'.integer.encoder,
+      'f'.integer.encoder,
+      'g'.integer.encoder,
+      'h'.integer.encoder,
+      'i'.integer.encoder,
+      'j'.integer.encoder,
+      'k'.integer.encoder,
+      'l'.integer.encoder,
+      'm'.integer.encoder,
+      'n'.integer.encoder,
+      'o'.integer.encoder,
       id,
     );
 

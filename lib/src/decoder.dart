@@ -3,35 +3,6 @@ import 'package:pj/src/error.dart';
 
 typedef DecodeResult<A> = Either<DecodingError, A>;
 
-Decoder<A> decodeKey<A>(String key, Decoder<A> decoder) => decoder.keyed(key);
-
-Decoder<BigInt> decodeBigInt(String key) => decodeKey(key, Decoder.bigint);
-
-Decoder<bool> decodeBool(String key) => decodeKey(key, Decoder.boolean);
-
-Decoder<DateTime> decodeDateTime(String key) =>
-    decodeKey(key, Decoder.dateTime);
-
-Decoder<double> decodeDouble(String key) => decodeKey(key, Decoder.dubble);
-
-Decoder<Duration> decodeDuration(String key) =>
-    decodeKey(key, Decoder.duration);
-
-Decoder<int> decodeInt(String key) => decodeKey(key, Decoder.integer);
-
-Decoder<IList<A>> decodeIList<A>(String key, Decoder<A> elementDecoder) =>
-    decodeKey(key, Decoder.ilist(elementDecoder));
-
-Decoder<List<A>> decodeList<A>(String key, Decoder<A> elementDecoder) =>
-    decodeKey(key, Decoder.list(elementDecoder));
-
-Decoder<num> decodeNum(String key) => decodeKey(key, Decoder.number);
-
-Decoder<Map<String, dynamic>> decodeObject(String key) =>
-    decodeKey(key, Decoder.object);
-
-Decoder<String> decodeString(String key) => decodeKey(key, Decoder.string);
-
 /// A [Decoder] provides the ability to convert JSON into values.
 class Decoder<A> {
   final Option<String> key;
@@ -83,19 +54,26 @@ class Decoder<A> {
   static Decoder<Duration> get duration =>
       integer.map((micros) => Duration(microseconds: micros));
 
-  static Decoder<IList<A>> ilist<A>(Decoder<A> elementDecoder) =>
-      _primitive<List<dynamic>>().flatMap(
-        (list) => Decoder._unkeyed(
-          (_) => IList.sequenceEither(
-            IList.from(list.map(elementDecoder.decode)),
-          ),
+  static Decoder<IList<A>> ilistOf<A>(Decoder<A> elementDecoder) {
+    elementDecoder.key.forEach(
+      (key) =>
+          // ignore: avoid_print
+          print('warn: Passing a keyed ($key) decoder to an [i]List decoder.'),
+    );
+
+    return _primitive<List<dynamic>>().flatMap(
+      (list) => Decoder._unkeyed(
+        (_) => IList.sequenceEither(
+          IList.from(list.map(elementDecoder.decode)),
         ),
-      );
+      ),
+    );
+  }
 
   static Decoder<int> get integer => _primitive<int>();
 
-  static Decoder<List<A>> list<A>(Decoder<A> elementDecoder) =>
-      ilist(elementDecoder).map((l) => l.toList());
+  static Decoder<List<A>> listOf<A>(Decoder<A> elementDecoder) =>
+      ilistOf(elementDecoder).map((l) => l.toList());
 
   static Decoder<num> get number => _primitive<num>();
 

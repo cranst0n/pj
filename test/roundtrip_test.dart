@@ -8,7 +8,7 @@ import 'models.dart';
 void main() {
   test('Roundtrip List<Bar>', () {
     final original = List.generate(100, (_) => Arbitraries.bar());
-    final codec = Codec.list(Bar.codec);
+    final codec = Codec.listOf(Bar.codec);
 
     final decoded = codec.decode(codec.encode(original));
 
@@ -25,8 +25,8 @@ void main() {
           Faker().randomGenerator.integer(100000000)),
     );
 
-    final decodedString = Decoder.list(Decoder.dateTime)
-        .decode(Encoder.list(Encoder.dateTime).encode(expected));
+    final decodedString = Decoder.listOf(Decoder.dateTime)
+        .decode(Encoder.listOf(Encoder.dateTime).encode(expected));
 
     decodedString.fold(
       (err) => fail('List<DateTime> decode failed: $err'),
