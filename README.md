@@ -1,6 +1,7 @@
 
 # pj
 
+[![pub package](https://img.shields.io/pub/v/pj.svg?color=blue)](https://pub.dev/packages/pj)
 <a href="https://github.com/cranst0n/pj/actions"><img src="https://github.com/cranst0n/pj/actions/workflows/main.yml/badge.svg" alt="Build Status"></a>
 <a href="https://codecov.io/gh/cranst0n/pj"><img src="https://codecov.io/gh/cranst0n/pj/branch/main/graph/badge.svg" alt="codecov"></a>
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT"></a>
