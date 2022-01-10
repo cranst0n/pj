@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.5
+
+- Reworked the syntax API
+
 ## 0.0.4
 
 - Add some missing primives.
