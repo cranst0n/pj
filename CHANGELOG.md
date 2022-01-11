@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.6
+
+- Increase arity to 20.
+
 ## 0.0.5
 
 - Reworked the syntax API
