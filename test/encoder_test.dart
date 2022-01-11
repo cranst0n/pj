@@ -489,4 +489,249 @@ void main() {
       },
     );
   });
+
+  test('Encoder.forProduct16', () {
+    final encoder = Encoder.forProduct16(
+      'a'.integer.encoder,
+      'b'.integer.encoder,
+      'c'.integer.encoder,
+      'd'.integer.encoder,
+      'e'.integer.encoder,
+      'f'.integer.encoder,
+      'g'.integer.encoder,
+      'h'.integer.encoder,
+      'i'.integer.encoder,
+      'j'.integer.encoder,
+      'k'.integer.encoder,
+      'l'.integer.encoder,
+      'm'.integer.encoder,
+      'n'.integer.encoder,
+      'o'.integer.encoder,
+      'p'.integer.encoder,
+      id,
+    );
+
+    expect(
+      encoder.encode(
+          tuple16(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)),
+      {
+        'a': 1,
+        'b': 2,
+        'c': 3,
+        'd': 4,
+        'e': 5,
+        'f': 6,
+        'g': 7,
+        'h': 8,
+        'i': 9,
+        'j': 10,
+        'k': 11,
+        'l': 12,
+        'm': 13,
+        'n': 14,
+        'o': 15,
+        'p': 16
+      },
+    );
+  });
+
+  test('Encoder.forProduct17', () {
+    final encoder = Encoder.forProduct17(
+      'a'.integer.encoder,
+      'b'.integer.encoder,
+      'c'.integer.encoder,
+      'd'.integer.encoder,
+      'e'.integer.encoder,
+      'f'.integer.encoder,
+      'g'.integer.encoder,
+      'h'.integer.encoder,
+      'i'.integer.encoder,
+      'j'.integer.encoder,
+      'k'.integer.encoder,
+      'l'.integer.encoder,
+      'm'.integer.encoder,
+      'n'.integer.encoder,
+      'o'.integer.encoder,
+      'p'.integer.encoder,
+      'q'.integer.encoder,
+      id,
+    );
+
+    expect(
+      encoder.encode(
+          tuple17(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17)),
+      {
+        'a': 1,
+        'b': 2,
+        'c': 3,
+        'd': 4,
+        'e': 5,
+        'f': 6,
+        'g': 7,
+        'h': 8,
+        'i': 9,
+        'j': 10,
+        'k': 11,
+        'l': 12,
+        'm': 13,
+        'n': 14,
+        'o': 15,
+        'p': 16,
+        'q': 17
+      },
+    );
+  });
+
+  test('Encoder.forProduct18', () {
+    final encoder = Encoder.forProduct18(
+      'a'.integer.encoder,
+      'b'.integer.encoder,
+      'c'.integer.encoder,
+      'd'.integer.encoder,
+      'e'.integer.encoder,
+      'f'.integer.encoder,
+      'g'.integer.encoder,
+      'h'.integer.encoder,
+      'i'.integer.encoder,
+      'j'.integer.encoder,
+      'k'.integer.encoder,
+      'l'.integer.encoder,
+      'm'.integer.encoder,
+      'n'.integer.encoder,
+      'o'.integer.encoder,
+      'p'.integer.encoder,
+      'q'.integer.encoder,
+      'r'.integer.encoder,
+      id,
+    );
+
+    expect(
+      encoder.encode(tuple18(
+          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18)),
+      {
+        'a': 1,
+        'b': 2,
+        'c': 3,
+        'd': 4,
+        'e': 5,
+        'f': 6,
+        'g': 7,
+        'h': 8,
+        'i': 9,
+        'j': 10,
+        'k': 11,
+        'l': 12,
+        'm': 13,
+        'n': 14,
+        'o': 15,
+        'p': 16,
+        'q': 17,
+        'r': 18
+      },
+    );
+  });
+
+  test('Encoder.forProduct19', () {
+    final encoder = Encoder.forProduct19(
+      'a'.integer.encoder,
+      'b'.integer.encoder,
+      'c'.integer.encoder,
+      'd'.integer.encoder,
+      'e'.integer.encoder,
+      'f'.integer.encoder,
+      'g'.integer.encoder,
+      'h'.integer.encoder,
+      'i'.integer.encoder,
+      'j'.integer.encoder,
+      'k'.integer.encoder,
+      'l'.integer.encoder,
+      'm'.integer.encoder,
+      'n'.integer.encoder,
+      'o'.integer.encoder,
+      'p'.integer.encoder,
+      'q'.integer.encoder,
+      'r'.integer.encoder,
+      's'.integer.encoder,
+      id,
+    );
+
+    expect(
+      encoder.encode(tuple19(
+          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19)),
+      {
+        'a': 1,
+        'b': 2,
+        'c': 3,
+        'd': 4,
+        'e': 5,
+        'f': 6,
+        'g': 7,
+        'h': 8,
+        'i': 9,
+        'j': 10,
+        'k': 11,
+        'l': 12,
+        'm': 13,
+        'n': 14,
+        'o': 15,
+        'p': 16,
+        'q': 17,
+        'r': 18,
+        's': 19
+      },
+    );
+  });
+
+  test('Encoder.forProduct20', () {
+    final encoder = Encoder.forProduct20(
+      'a'.integer.encoder,
+      'b'.integer.encoder,
+      'c'.integer.encoder,
+      'd'.integer.encoder,
+      'e'.integer.encoder,
+      'f'.integer.encoder,
+      'g'.integer.encoder,
+      'h'.integer.encoder,
+      'i'.integer.encoder,
+      'j'.integer.encoder,
+      'k'.integer.encoder,
+      'l'.integer.encoder,
+      'm'.integer.encoder,
+      'n'.integer.encoder,
+      'o'.integer.encoder,
+      'p'.integer.encoder,
+      'q'.integer.encoder,
+      'r'.integer.encoder,
+      's'.integer.encoder,
+      't'.integer.encoder,
+      id,
+    );
+
+    expect(
+      encoder.encode(tuple20(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+          16, 17, 18, 19, 20)),
+      {
+        'a': 1,
+        'b': 2,
+        'c': 3,
+        'd': 4,
+        'e': 5,
+        'f': 6,
+        'g': 7,
+        'h': 8,
+        'i': 9,
+        'j': 10,
+        'k': 11,
+        'l': 12,
+        'm': 13,
+        'n': 14,
+        'o': 15,
+        'p': 16,
+        'q': 17,
+        'r': 18,
+        's': 19,
+        't': 20
+      },
+    );
+  });
 }

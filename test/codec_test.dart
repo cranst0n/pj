@@ -302,6 +302,138 @@ void main() {
     );
   });
 
+  test('Codec.tuple16', () {
+    _codecTest(
+      Codec.tuple16(
+        integer('a'),
+        integer('b'),
+        integer('c'),
+        integer('d'),
+        integer('e'),
+        integer('f'),
+        integer('g'),
+        integer('h'),
+        integer('i'),
+        integer('j'),
+        integer('k'),
+        integer('l'),
+        integer('m'),
+        integer('n'),
+        integer('o'),
+        integer('p'),
+      ),
+      tuple16(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
+    );
+  });
+
+  test('Codec.tuple17', () {
+    _codecTest(
+      Codec.tuple17(
+        integer('a'),
+        integer('b'),
+        integer('c'),
+        integer('d'),
+        integer('e'),
+        integer('f'),
+        integer('g'),
+        integer('h'),
+        integer('i'),
+        integer('j'),
+        integer('k'),
+        integer('l'),
+        integer('m'),
+        integer('n'),
+        integer('o'),
+        integer('p'),
+        integer('q'),
+      ),
+      tuple17(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17),
+    );
+  });
+
+  test('Codec.tuple18', () {
+    _codecTest(
+      Codec.tuple18(
+        integer('a'),
+        integer('b'),
+        integer('c'),
+        integer('d'),
+        integer('e'),
+        integer('f'),
+        integer('g'),
+        integer('h'),
+        integer('i'),
+        integer('j'),
+        integer('k'),
+        integer('l'),
+        integer('m'),
+        integer('n'),
+        integer('o'),
+        integer('p'),
+        integer('q'),
+        integer('r'),
+      ),
+      tuple18(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18),
+    );
+  });
+
+  test('Codec.tuple19', () {
+    _codecTest(
+      Codec.tuple19(
+        integer('a'),
+        integer('b'),
+        integer('c'),
+        integer('d'),
+        integer('e'),
+        integer('f'),
+        integer('g'),
+        integer('h'),
+        integer('i'),
+        integer('j'),
+        integer('k'),
+        integer('l'),
+        integer('m'),
+        integer('n'),
+        integer('o'),
+        integer('p'),
+        integer('q'),
+        integer('r'),
+        integer('s'),
+      ),
+      tuple19(
+          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19),
+    );
+  });
+
+  test('Codec.tuple20', () {
+    _codecTest(
+      Codec.tuple20(
+        integer('a'),
+        integer('b'),
+        integer('c'),
+        integer('d'),
+        integer('e'),
+        integer('f'),
+        integer('g'),
+        integer('h'),
+        integer('i'),
+        integer('j'),
+        integer('k'),
+        integer('l'),
+        integer('m'),
+        integer('n'),
+        integer('o'),
+        integer('p'),
+        integer('q'),
+        integer('r'),
+        integer('s'),
+        integer('t'),
+      ),
+      tuple20(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+          20),
+    );
+  });
+
   test('Codec.forProduct2', () {
     _codecTest(
       Codec.forProduct2(
@@ -582,6 +714,153 @@ void main() {
         id,
       ),
       tuple15(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15),
+    );
+  });
+
+  test('Codec.forProduct16', () {
+    _codecTest(
+      Codec.forProduct16(
+        'a'.integer,
+        'b'.integer,
+        'c'.integer,
+        'd'.integer,
+        'e'.integer,
+        'f'.integer,
+        'g'.integer,
+        'h'.integer,
+        'i'.integer,
+        'j'.integer,
+        'k'.integer,
+        'l'.integer,
+        'm'.integer,
+        'n'.integer,
+        'o'.integer,
+        'p'.integer,
+        (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p) =>
+            tuple16(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p),
+        id,
+      ),
+      tuple16(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
+    );
+  });
+
+  test('Codec.forProduct17', () {
+    _codecTest(
+      Codec.forProduct17(
+        'a'.integer,
+        'b'.integer,
+        'c'.integer,
+        'd'.integer,
+        'e'.integer,
+        'f'.integer,
+        'g'.integer,
+        'h'.integer,
+        'i'.integer,
+        'j'.integer,
+        'k'.integer,
+        'l'.integer,
+        'm'.integer,
+        'n'.integer,
+        'o'.integer,
+        'p'.integer,
+        'q'.integer,
+        (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q) =>
+            tuple17(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q),
+        id,
+      ),
+      tuple17(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17),
+    );
+  });
+
+  test('Codec.forProduct18', () {
+    _codecTest(
+      Codec.forProduct18(
+        'a'.integer,
+        'b'.integer,
+        'c'.integer,
+        'd'.integer,
+        'e'.integer,
+        'f'.integer,
+        'g'.integer,
+        'h'.integer,
+        'i'.integer,
+        'j'.integer,
+        'k'.integer,
+        'l'.integer,
+        'm'.integer,
+        'n'.integer,
+        'o'.integer,
+        'p'.integer,
+        'q'.integer,
+        'r'.integer,
+        (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r) =>
+            tuple18(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r),
+        id,
+      ),
+      tuple18(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18),
+    );
+  });
+
+  test('Codec.forProduct19', () {
+    _codecTest(
+      Codec.forProduct19(
+        'a'.integer,
+        'b'.integer,
+        'c'.integer,
+        'd'.integer,
+        'e'.integer,
+        'f'.integer,
+        'g'.integer,
+        'h'.integer,
+        'i'.integer,
+        'j'.integer,
+        'k'.integer,
+        'l'.integer,
+        'm'.integer,
+        'n'.integer,
+        'o'.integer,
+        'p'.integer,
+        'q'.integer,
+        'r'.integer,
+        's'.integer,
+        (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s) =>
+            tuple19(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s),
+        id,
+      ),
+      tuple19(
+          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19),
+    );
+  });
+
+  test('Codec.forProduct20', () {
+    _codecTest(
+      Codec.forProduct20(
+        'a'.integer,
+        'b'.integer,
+        'c'.integer,
+        'd'.integer,
+        'e'.integer,
+        'f'.integer,
+        'g'.integer,
+        'h'.integer,
+        'i'.integer,
+        'j'.integer,
+        'k'.integer,
+        'l'.integer,
+        'm'.integer,
+        'n'.integer,
+        'o'.integer,
+        'p'.integer,
+        'q'.integer,
+        'r'.integer,
+        's'.integer,
+        't'.integer,
+        (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t) =>
+            tuple20(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t),
+        id,
+      ),
+      tuple20(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+          20),
     );
   });
 }

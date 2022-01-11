@@ -337,6 +337,218 @@ class Encoder<A> {
               .encode(tuple.init)
             ..addAll(encodeO.encode(tuple.last)));
 
+  static Encoder<Tuple16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>>
+      tuple16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>(
+    Encoder<A> encodeA,
+    Encoder<B> encodeB,
+    Encoder<C> encodeC,
+    Encoder<D> encodeD,
+    Encoder<E> encodeE,
+    Encoder<F> encodeF,
+    Encoder<G> encodeG,
+    Encoder<H> encodeH,
+    Encoder<I> encodeI,
+    Encoder<J> encodeJ,
+    Encoder<K> encodeK,
+    Encoder<L> encodeL,
+    Encoder<M> encodeM,
+    Encoder<N> encodeN,
+    Encoder<O> encodeO,
+    Encoder<P> encodeP,
+  ) =>
+          Encoder._unkeyed((tuple) => tuple15(
+                  encodeA,
+                  encodeB,
+                  encodeC,
+                  encodeD,
+                  encodeE,
+                  encodeF,
+                  encodeG,
+                  encodeH,
+                  encodeI,
+                  encodeJ,
+                  encodeK,
+                  encodeL,
+                  encodeM,
+                  encodeN,
+                  encodeO)
+              .encode(tuple.init)
+            ..addAll(encodeP.encode(tuple.last)));
+
+  static Encoder<Tuple17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>>
+      tuple17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>(
+    Encoder<A> encodeA,
+    Encoder<B> encodeB,
+    Encoder<C> encodeC,
+    Encoder<D> encodeD,
+    Encoder<E> encodeE,
+    Encoder<F> encodeF,
+    Encoder<G> encodeG,
+    Encoder<H> encodeH,
+    Encoder<I> encodeI,
+    Encoder<J> encodeJ,
+    Encoder<K> encodeK,
+    Encoder<L> encodeL,
+    Encoder<M> encodeM,
+    Encoder<N> encodeN,
+    Encoder<O> encodeO,
+    Encoder<P> encodeP,
+    Encoder<Q> encodeQ,
+  ) =>
+          Encoder._unkeyed((tuple) => tuple16(
+                  encodeA,
+                  encodeB,
+                  encodeC,
+                  encodeD,
+                  encodeE,
+                  encodeF,
+                  encodeG,
+                  encodeH,
+                  encodeI,
+                  encodeJ,
+                  encodeK,
+                  encodeL,
+                  encodeM,
+                  encodeN,
+                  encodeO,
+                  encodeP)
+              .encode(tuple.init)
+            ..addAll(encodeQ.encode(tuple.last)));
+
+  static Encoder<Tuple18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>>
+      tuple18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>(
+    Encoder<A> encodeA,
+    Encoder<B> encodeB,
+    Encoder<C> encodeC,
+    Encoder<D> encodeD,
+    Encoder<E> encodeE,
+    Encoder<F> encodeF,
+    Encoder<G> encodeG,
+    Encoder<H> encodeH,
+    Encoder<I> encodeI,
+    Encoder<J> encodeJ,
+    Encoder<K> encodeK,
+    Encoder<L> encodeL,
+    Encoder<M> encodeM,
+    Encoder<N> encodeN,
+    Encoder<O> encodeO,
+    Encoder<P> encodeP,
+    Encoder<Q> encodeQ,
+    Encoder<R> encodeR,
+  ) =>
+          Encoder._unkeyed((tuple) => tuple17(
+                  encodeA,
+                  encodeB,
+                  encodeC,
+                  encodeD,
+                  encodeE,
+                  encodeF,
+                  encodeG,
+                  encodeH,
+                  encodeI,
+                  encodeJ,
+                  encodeK,
+                  encodeL,
+                  encodeM,
+                  encodeN,
+                  encodeO,
+                  encodeP,
+                  encodeQ)
+              .encode(tuple.init)
+            ..addAll(encodeR.encode(tuple.last)));
+
+  static Encoder<
+          Tuple19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>>
+      tuple19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>(
+    Encoder<A> encodeA,
+    Encoder<B> encodeB,
+    Encoder<C> encodeC,
+    Encoder<D> encodeD,
+    Encoder<E> encodeE,
+    Encoder<F> encodeF,
+    Encoder<G> encodeG,
+    Encoder<H> encodeH,
+    Encoder<I> encodeI,
+    Encoder<J> encodeJ,
+    Encoder<K> encodeK,
+    Encoder<L> encodeL,
+    Encoder<M> encodeM,
+    Encoder<N> encodeN,
+    Encoder<O> encodeO,
+    Encoder<P> encodeP,
+    Encoder<Q> encodeQ,
+    Encoder<R> encodeR,
+    Encoder<S> encodeS,
+  ) =>
+          Encoder._unkeyed((tuple) => tuple18(
+                  encodeA,
+                  encodeB,
+                  encodeC,
+                  encodeD,
+                  encodeE,
+                  encodeF,
+                  encodeG,
+                  encodeH,
+                  encodeI,
+                  encodeJ,
+                  encodeK,
+                  encodeL,
+                  encodeM,
+                  encodeN,
+                  encodeO,
+                  encodeP,
+                  encodeQ,
+                  encodeR)
+              .encode(tuple.init)
+            ..addAll(encodeS.encode(tuple.last)));
+
+  static Encoder<
+          Tuple20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>>
+      tuple20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>(
+    Encoder<A> encodeA,
+    Encoder<B> encodeB,
+    Encoder<C> encodeC,
+    Encoder<D> encodeD,
+    Encoder<E> encodeE,
+    Encoder<F> encodeF,
+    Encoder<G> encodeG,
+    Encoder<H> encodeH,
+    Encoder<I> encodeI,
+    Encoder<J> encodeJ,
+    Encoder<K> encodeK,
+    Encoder<L> encodeL,
+    Encoder<M> encodeM,
+    Encoder<N> encodeN,
+    Encoder<O> encodeO,
+    Encoder<P> encodeP,
+    Encoder<Q> encodeQ,
+    Encoder<R> encodeR,
+    Encoder<S> encodeS,
+    Encoder<T> encodeT,
+  ) =>
+          Encoder._unkeyed((tuple) => tuple19(
+                  encodeA,
+                  encodeB,
+                  encodeC,
+                  encodeD,
+                  encodeE,
+                  encodeF,
+                  encodeG,
+                  encodeH,
+                  encodeI,
+                  encodeJ,
+                  encodeK,
+                  encodeL,
+                  encodeM,
+                  encodeN,
+                  encodeO,
+                  encodeP,
+                  encodeQ,
+                  encodeR,
+                  encodeS)
+              .encode(tuple.init)
+            ..addAll(encodeT.encode(tuple.last)));
+
   //////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////// ProductN //////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
@@ -602,4 +814,223 @@ class Encoder<A> {
                   encodeO,
                   encodeP)
               .encode(fn(a)));
+
+  static Encoder<A>
+      forProduct16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>(
+    Encoder<B> encodeB,
+    Encoder<C> encodeC,
+    Encoder<D> encodeD,
+    Encoder<E> encodeE,
+    Encoder<F> encodeF,
+    Encoder<G> encodeG,
+    Encoder<H> encodeH,
+    Encoder<I> encodeI,
+    Encoder<J> encodeJ,
+    Encoder<K> encodeK,
+    Encoder<L> encodeL,
+    Encoder<M> encodeM,
+    Encoder<N> encodeN,
+    Encoder<O> encodeO,
+    Encoder<P> encodeP,
+    Encoder<Q> encodeQ,
+    Tuple16<B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> Function(A) fn,
+  ) =>
+          Encoder._unkeyed((a) => tuple16(
+                  encodeB,
+                  encodeC,
+                  encodeD,
+                  encodeE,
+                  encodeF,
+                  encodeG,
+                  encodeH,
+                  encodeI,
+                  encodeJ,
+                  encodeK,
+                  encodeL,
+                  encodeM,
+                  encodeN,
+                  encodeO,
+                  encodeP,
+                  encodeQ)
+              .encode(fn(a)));
+
+  static Encoder<A>
+      forProduct17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>(
+    Encoder<B> encodeB,
+    Encoder<C> encodeC,
+    Encoder<D> encodeD,
+    Encoder<E> encodeE,
+    Encoder<F> encodeF,
+    Encoder<G> encodeG,
+    Encoder<H> encodeH,
+    Encoder<I> encodeI,
+    Encoder<J> encodeJ,
+    Encoder<K> encodeK,
+    Encoder<L> encodeL,
+    Encoder<M> encodeM,
+    Encoder<N> encodeN,
+    Encoder<O> encodeO,
+    Encoder<P> encodeP,
+    Encoder<Q> encodeQ,
+    Encoder<R> encodeR,
+    Tuple17<B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> Function(A) fn,
+  ) =>
+          Encoder._unkeyed((a) => tuple17(
+                  encodeB,
+                  encodeC,
+                  encodeD,
+                  encodeE,
+                  encodeF,
+                  encodeG,
+                  encodeH,
+                  encodeI,
+                  encodeJ,
+                  encodeK,
+                  encodeL,
+                  encodeM,
+                  encodeN,
+                  encodeO,
+                  encodeP,
+                  encodeQ,
+                  encodeR)
+              .encode(fn(a)));
+
+  static Encoder<A>
+      forProduct18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>(
+    Encoder<B> encodeB,
+    Encoder<C> encodeC,
+    Encoder<D> encodeD,
+    Encoder<E> encodeE,
+    Encoder<F> encodeF,
+    Encoder<G> encodeG,
+    Encoder<H> encodeH,
+    Encoder<I> encodeI,
+    Encoder<J> encodeJ,
+    Encoder<K> encodeK,
+    Encoder<L> encodeL,
+    Encoder<M> encodeM,
+    Encoder<N> encodeN,
+    Encoder<O> encodeO,
+    Encoder<P> encodeP,
+    Encoder<Q> encodeQ,
+    Encoder<R> encodeR,
+    Encoder<S> encodeS,
+    Tuple18<B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> Function(A)
+        fn,
+  ) =>
+          Encoder._unkeyed((a) => tuple18(
+                  encodeB,
+                  encodeC,
+                  encodeD,
+                  encodeE,
+                  encodeF,
+                  encodeG,
+                  encodeH,
+                  encodeI,
+                  encodeJ,
+                  encodeK,
+                  encodeL,
+                  encodeM,
+                  encodeN,
+                  encodeO,
+                  encodeP,
+                  encodeQ,
+                  encodeR,
+                  encodeS)
+              .encode(fn(a)));
+
+  static Encoder<A>
+      forProduct19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>(
+    Encoder<B> encodeB,
+    Encoder<C> encodeC,
+    Encoder<D> encodeD,
+    Encoder<E> encodeE,
+    Encoder<F> encodeF,
+    Encoder<G> encodeG,
+    Encoder<H> encodeH,
+    Encoder<I> encodeI,
+    Encoder<J> encodeJ,
+    Encoder<K> encodeK,
+    Encoder<L> encodeL,
+    Encoder<M> encodeM,
+    Encoder<N> encodeN,
+    Encoder<O> encodeO,
+    Encoder<P> encodeP,
+    Encoder<Q> encodeQ,
+    Encoder<R> encodeR,
+    Encoder<S> encodeS,
+    Encoder<T> encodeT,
+    Tuple19<B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> Function(A)
+        fn,
+  ) =>
+          Encoder._unkeyed((a) => tuple19(
+                  encodeB,
+                  encodeC,
+                  encodeD,
+                  encodeE,
+                  encodeF,
+                  encodeG,
+                  encodeH,
+                  encodeI,
+                  encodeJ,
+                  encodeK,
+                  encodeL,
+                  encodeM,
+                  encodeN,
+                  encodeO,
+                  encodeP,
+                  encodeQ,
+                  encodeR,
+                  encodeS,
+                  encodeT)
+              .encode(fn(a)));
+
+  static Encoder<A> forProduct20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P,
+          Q, R, S, T, U>(
+    Encoder<B> encodeB,
+    Encoder<C> encodeC,
+    Encoder<D> encodeD,
+    Encoder<E> encodeE,
+    Encoder<F> encodeF,
+    Encoder<G> encodeG,
+    Encoder<H> encodeH,
+    Encoder<I> encodeI,
+    Encoder<J> encodeJ,
+    Encoder<K> encodeK,
+    Encoder<L> encodeL,
+    Encoder<M> encodeM,
+    Encoder<N> encodeN,
+    Encoder<O> encodeO,
+    Encoder<P> encodeP,
+    Encoder<Q> encodeQ,
+    Encoder<R> encodeR,
+    Encoder<S> encodeS,
+    Encoder<T> encodeT,
+    Encoder<U> encodeU,
+    Tuple20<B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>
+            Function(A)
+        fn,
+  ) =>
+      Encoder._unkeyed((a) => tuple20(
+              encodeB,
+              encodeC,
+              encodeD,
+              encodeE,
+              encodeF,
+              encodeG,
+              encodeH,
+              encodeI,
+              encodeJ,
+              encodeK,
+              encodeL,
+              encodeM,
+              encodeN,
+              encodeO,
+              encodeP,
+              encodeQ,
+              encodeR,
+              encodeS,
+              encodeT,
+              encodeU)
+          .encode(fn(a)));
 }

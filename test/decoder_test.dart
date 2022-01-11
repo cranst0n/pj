@@ -82,7 +82,7 @@ void main() {
     ]);
   });
 
-  test('Decoder.list with keyed decoder', overridePrint(() {
+  test('Decoder.list with keyed decoder', logPrints(() {
     final decoder = listOf(string('bar'))('foo').decoder;
 
     decoder.decode(['a', 'b', 'c']).fold(
@@ -343,7 +343,7 @@ void _primitiveTest<A>(Decoder<A> decoder, dynamic json, A expected) {
 
 final printLog = [];
 
-void Function() overridePrint(void Function() testFn) => () {
+void Function() logPrints(void Function() testFn) => () {
       final spec = ZoneSpecification(print: (_, __, ___, String msg) {
         // Add to log instead of printing to stdout
         printLog.add(msg);

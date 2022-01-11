@@ -163,8 +163,7 @@ class Decoder<A> {
     Decoder<B> decodeB,
     Decoder<C> decodeC,
   ) =>
-      tuple2(decodeA, decodeB)
-          .flatMap((t2) => decodeC.map((c) => t2.append(c)));
+      tuple2(decodeA, decodeB).flatMap((t2) => decodeC.map(t2.append));
 
   static Decoder<Tuple4<A, B, C, D>> tuple4<A, B, C, D>(
     Decoder<A> decodeA,
@@ -172,8 +171,7 @@ class Decoder<A> {
     Decoder<C> decodeC,
     Decoder<D> decodeD,
   ) =>
-      tuple3(decodeA, decodeB, decodeC)
-          .flatMap((t3) => decodeD.map((d) => t3.append(d)));
+      tuple3(decodeA, decodeB, decodeC).flatMap((t3) => decodeD.map(t3.append));
 
   static Decoder<Tuple5<A, B, C, D, E>> tuple5<A, B, C, D, E>(
     Decoder<A> decodeA,
@@ -183,7 +181,7 @@ class Decoder<A> {
     Decoder<E> decodeE,
   ) =>
       tuple4(decodeA, decodeB, decodeC, decodeD)
-          .flatMap((t4) => decodeE.map((e) => t4.append(e)));
+          .flatMap((t4) => decodeE.map(t4.append));
 
   static Decoder<Tuple6<A, B, C, D, E, F>> tuple6<A, B, C, D, E, F>(
     Decoder<A> decodeA,
@@ -194,7 +192,7 @@ class Decoder<A> {
     Decoder<F> decodeF,
   ) =>
       tuple5(decodeA, decodeB, decodeC, decodeD, decodeE)
-          .flatMap((t5) => decodeF.map((f) => t5.append(f)));
+          .flatMap((t5) => decodeF.map(t5.append));
 
   static Decoder<Tuple7<A, B, C, D, E, F, G>> tuple7<A, B, C, D, E, F, G>(
     Decoder<A> decodeA,
@@ -219,7 +217,7 @@ class Decoder<A> {
     Decoder<H> decodeH,
   ) =>
       tuple7(decodeA, decodeB, decodeC, decodeD, decodeE, decodeF, decodeG)
-          .flatMap((t7) => decodeH.map((h) => t7.append(h)));
+          .flatMap((t7) => decodeH.map(t7.append));
 
   static Decoder<Tuple9<A, B, C, D, E, F, G, H, I>>
       tuple9<A, B, C, D, E, F, G, H, I>(
@@ -235,7 +233,7 @@ class Decoder<A> {
   ) =>
           tuple8(decodeA, decodeB, decodeC, decodeD, decodeE, decodeF, decodeG,
                   decodeH)
-              .flatMap((t8) => decodeI.map((i) => t8.append(i)));
+              .flatMap((t8) => decodeI.map(t8.append));
 
   static Decoder<Tuple10<A, B, C, D, E, F, G, H, I, J>>
       tuple10<A, B, C, D, E, F, G, H, I, J>(
@@ -252,7 +250,7 @@ class Decoder<A> {
   ) =>
           tuple9(decodeA, decodeB, decodeC, decodeD, decodeE, decodeF, decodeG,
                   decodeH, decodeI)
-              .flatMap((t9) => decodeJ.map((j) => t9.append(j)));
+              .flatMap((t9) => decodeJ.map(t9.append));
 
   static Decoder<Tuple11<A, B, C, D, E, F, G, H, I, J, K>>
       tuple11<A, B, C, D, E, F, G, H, I, J, K>(
@@ -270,7 +268,7 @@ class Decoder<A> {
   ) =>
           tuple10(decodeA, decodeB, decodeC, decodeD, decodeE, decodeF, decodeG,
                   decodeH, decodeI, decodeJ)
-              .flatMap((t10) => decodeK.map((j) => t10.append(j)));
+              .flatMap((t10) => decodeK.map(t10.append));
 
   static Decoder<Tuple12<A, B, C, D, E, F, G, H, I, J, K, L>>
       tuple12<A, B, C, D, E, F, G, H, I, J, K, L>(
@@ -289,7 +287,7 @@ class Decoder<A> {
   ) =>
           tuple11(decodeA, decodeB, decodeC, decodeD, decodeE, decodeF, decodeG,
                   decodeH, decodeI, decodeJ, decodeK)
-              .flatMap((t11) => decodeL.map((l) => t11.append(l)));
+              .flatMap((t11) => decodeL.map(t11.append));
 
   static Decoder<Tuple13<A, B, C, D, E, F, G, H, I, J, K, L, M>>
       tuple13<A, B, C, D, E, F, G, H, I, J, K, L, M>(
@@ -309,7 +307,7 @@ class Decoder<A> {
   ) =>
           tuple12(decodeA, decodeB, decodeC, decodeD, decodeE, decodeF, decodeG,
                   decodeH, decodeI, decodeJ, decodeK, decodeL)
-              .flatMap((t12) => decodeM.map((m) => t12.append(m)));
+              .flatMap((t12) => decodeM.map(t12.append));
 
   static Decoder<Tuple14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>>
       tuple14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>(
@@ -330,7 +328,7 @@ class Decoder<A> {
   ) =>
           tuple13(decodeA, decodeB, decodeC, decodeD, decodeE, decodeF, decodeG,
                   decodeH, decodeI, decodeJ, decodeK, decodeL, decodeM)
-              .flatMap((t13) => decodeN.map((n) => t13.append(n)));
+              .flatMap((t13) => decodeN.map(t13.append));
 
   static Decoder<Tuple15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>>
       tuple15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>(
@@ -352,7 +350,214 @@ class Decoder<A> {
   ) =>
           tuple14(decodeA, decodeB, decodeC, decodeD, decodeE, decodeF, decodeG,
                   decodeH, decodeI, decodeJ, decodeK, decodeL, decodeM, decodeN)
-              .flatMap((t14) => decodeO.map((o) => t14.append(o)));
+              .flatMap((t14) => decodeO.map(t14.append));
+
+  static Decoder<Tuple16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>>
+      tuple16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>(
+    Decoder<A> decodeA,
+    Decoder<B> decodeB,
+    Decoder<C> decodeC,
+    Decoder<D> decodeD,
+    Decoder<E> decodeE,
+    Decoder<F> decodeF,
+    Decoder<G> decodeG,
+    Decoder<H> decodeH,
+    Decoder<I> decodeI,
+    Decoder<J> decodeJ,
+    Decoder<K> decodeK,
+    Decoder<L> decodeL,
+    Decoder<M> decodeM,
+    Decoder<N> decodeN,
+    Decoder<O> decodeO,
+    Decoder<P> decodeP,
+  ) =>
+          tuple15(
+                  decodeA,
+                  decodeB,
+                  decodeC,
+                  decodeD,
+                  decodeE,
+                  decodeF,
+                  decodeG,
+                  decodeH,
+                  decodeI,
+                  decodeJ,
+                  decodeK,
+                  decodeL,
+                  decodeM,
+                  decodeN,
+                  decodeO)
+              .flatMap((t15) => decodeP.map(t15.append));
+
+  static Decoder<Tuple17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>>
+      tuple17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>(
+    Decoder<A> decodeA,
+    Decoder<B> decodeB,
+    Decoder<C> decodeC,
+    Decoder<D> decodeD,
+    Decoder<E> decodeE,
+    Decoder<F> decodeF,
+    Decoder<G> decodeG,
+    Decoder<H> decodeH,
+    Decoder<I> decodeI,
+    Decoder<J> decodeJ,
+    Decoder<K> decodeK,
+    Decoder<L> decodeL,
+    Decoder<M> decodeM,
+    Decoder<N> decodeN,
+    Decoder<O> decodeO,
+    Decoder<P> decodeP,
+    Decoder<Q> decodeQ,
+  ) =>
+          tuple16(
+                  decodeA,
+                  decodeB,
+                  decodeC,
+                  decodeD,
+                  decodeE,
+                  decodeF,
+                  decodeG,
+                  decodeH,
+                  decodeI,
+                  decodeJ,
+                  decodeK,
+                  decodeL,
+                  decodeM,
+                  decodeN,
+                  decodeO,
+                  decodeP)
+              .flatMap((t16) => decodeQ.map(t16.append));
+
+  static Decoder<Tuple18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>>
+      tuple18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>(
+    Decoder<A> decodeA,
+    Decoder<B> decodeB,
+    Decoder<C> decodeC,
+    Decoder<D> decodeD,
+    Decoder<E> decodeE,
+    Decoder<F> decodeF,
+    Decoder<G> decodeG,
+    Decoder<H> decodeH,
+    Decoder<I> decodeI,
+    Decoder<J> decodeJ,
+    Decoder<K> decodeK,
+    Decoder<L> decodeL,
+    Decoder<M> decodeM,
+    Decoder<N> decodeN,
+    Decoder<O> decodeO,
+    Decoder<P> decodeP,
+    Decoder<Q> decodeQ,
+    Decoder<R> decodeR,
+  ) =>
+          tuple17(
+                  decodeA,
+                  decodeB,
+                  decodeC,
+                  decodeD,
+                  decodeE,
+                  decodeF,
+                  decodeG,
+                  decodeH,
+                  decodeI,
+                  decodeJ,
+                  decodeK,
+                  decodeL,
+                  decodeM,
+                  decodeN,
+                  decodeO,
+                  decodeP,
+                  decodeQ)
+              .flatMap((t17) => decodeR.map(t17.append));
+
+  static Decoder<
+          Tuple19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>>
+      tuple19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>(
+    Decoder<A> decodeA,
+    Decoder<B> decodeB,
+    Decoder<C> decodeC,
+    Decoder<D> decodeD,
+    Decoder<E> decodeE,
+    Decoder<F> decodeF,
+    Decoder<G> decodeG,
+    Decoder<H> decodeH,
+    Decoder<I> decodeI,
+    Decoder<J> decodeJ,
+    Decoder<K> decodeK,
+    Decoder<L> decodeL,
+    Decoder<M> decodeM,
+    Decoder<N> decodeN,
+    Decoder<O> decodeO,
+    Decoder<P> decodeP,
+    Decoder<Q> decodeQ,
+    Decoder<R> decodeR,
+    Decoder<S> decodeS,
+  ) =>
+          tuple18(
+                  decodeA,
+                  decodeB,
+                  decodeC,
+                  decodeD,
+                  decodeE,
+                  decodeF,
+                  decodeG,
+                  decodeH,
+                  decodeI,
+                  decodeJ,
+                  decodeK,
+                  decodeL,
+                  decodeM,
+                  decodeN,
+                  decodeO,
+                  decodeP,
+                  decodeQ,
+                  decodeR)
+              .flatMap((t18) => decodeS.map(t18.append));
+
+  static Decoder<
+          Tuple20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>>
+      tuple20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>(
+    Decoder<A> decodeA,
+    Decoder<B> decodeB,
+    Decoder<C> decodeC,
+    Decoder<D> decodeD,
+    Decoder<E> decodeE,
+    Decoder<F> decodeF,
+    Decoder<G> decodeG,
+    Decoder<H> decodeH,
+    Decoder<I> decodeI,
+    Decoder<J> decodeJ,
+    Decoder<K> decodeK,
+    Decoder<L> decodeL,
+    Decoder<M> decodeM,
+    Decoder<N> decodeN,
+    Decoder<O> decodeO,
+    Decoder<P> decodeP,
+    Decoder<Q> decodeQ,
+    Decoder<R> decodeR,
+    Decoder<S> decodeS,
+    Decoder<T> decodeT,
+  ) =>
+          tuple19(
+                  decodeA,
+                  decodeB,
+                  decodeC,
+                  decodeD,
+                  decodeE,
+                  decodeF,
+                  decodeG,
+                  decodeH,
+                  decodeI,
+                  decodeJ,
+                  decodeK,
+                  decodeL,
+                  decodeM,
+                  decodeN,
+                  decodeO,
+                  decodeP,
+                  decodeQ,
+                  decodeR,
+                  decodeS)
+              .flatMap((t19) => decodeT.map(t19.append));
 
   //////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////// ProductN //////////////////////////////////
@@ -580,4 +785,219 @@ class Decoder<A> {
                   decodeO,
                   decodeP)
               .map((t) => t.apply(fn));
+
+  static Decoder<A>
+      forProduct16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>(
+    Decoder<B> decodeB,
+    Decoder<C> decodeC,
+    Decoder<D> decodeD,
+    Decoder<E> decodeE,
+    Decoder<F> decodeF,
+    Decoder<G> decodeG,
+    Decoder<H> decodeH,
+    Decoder<I> decodeI,
+    Decoder<J> decodeJ,
+    Decoder<K> decodeK,
+    Decoder<L> decodeL,
+    Decoder<M> decodeM,
+    Decoder<N> decodeN,
+    Decoder<O> decodeO,
+    Decoder<P> decodeP,
+    Decoder<Q> decodeQ,
+    A Function(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) fn,
+  ) =>
+          tuple16(
+                  decodeB,
+                  decodeC,
+                  decodeD,
+                  decodeE,
+                  decodeF,
+                  decodeG,
+                  decodeH,
+                  decodeI,
+                  decodeJ,
+                  decodeK,
+                  decodeL,
+                  decodeM,
+                  decodeN,
+                  decodeO,
+                  decodeP,
+                  decodeQ)
+              .map((t) => t.apply(fn));
+
+  static Decoder<A>
+      forProduct17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>(
+    Decoder<B> decodeB,
+    Decoder<C> decodeC,
+    Decoder<D> decodeD,
+    Decoder<E> decodeE,
+    Decoder<F> decodeF,
+    Decoder<G> decodeG,
+    Decoder<H> decodeH,
+    Decoder<I> decodeI,
+    Decoder<J> decodeJ,
+    Decoder<K> decodeK,
+    Decoder<L> decodeL,
+    Decoder<M> decodeM,
+    Decoder<N> decodeN,
+    Decoder<O> decodeO,
+    Decoder<P> decodeP,
+    Decoder<Q> decodeQ,
+    Decoder<R> decodeR,
+    A Function(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) fn,
+  ) =>
+          tuple17(
+                  decodeB,
+                  decodeC,
+                  decodeD,
+                  decodeE,
+                  decodeF,
+                  decodeG,
+                  decodeH,
+                  decodeI,
+                  decodeJ,
+                  decodeK,
+                  decodeL,
+                  decodeM,
+                  decodeN,
+                  decodeO,
+                  decodeP,
+                  decodeQ,
+                  decodeR)
+              .map((t) => t.apply(fn));
+
+  static Decoder<A>
+      forProduct18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>(
+    Decoder<B> decodeB,
+    Decoder<C> decodeC,
+    Decoder<D> decodeD,
+    Decoder<E> decodeE,
+    Decoder<F> decodeF,
+    Decoder<G> decodeG,
+    Decoder<H> decodeH,
+    Decoder<I> decodeI,
+    Decoder<J> decodeJ,
+    Decoder<K> decodeK,
+    Decoder<L> decodeL,
+    Decoder<M> decodeM,
+    Decoder<N> decodeN,
+    Decoder<O> decodeO,
+    Decoder<P> decodeP,
+    Decoder<Q> decodeQ,
+    Decoder<R> decodeR,
+    Decoder<S> decodeS,
+    A Function(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) fn,
+  ) =>
+          tuple18(
+                  decodeB,
+                  decodeC,
+                  decodeD,
+                  decodeE,
+                  decodeF,
+                  decodeG,
+                  decodeH,
+                  decodeI,
+                  decodeJ,
+                  decodeK,
+                  decodeL,
+                  decodeM,
+                  decodeN,
+                  decodeO,
+                  decodeP,
+                  decodeQ,
+                  decodeR,
+                  decodeS)
+              .map((t) => t.apply(fn));
+
+  static Decoder<A>
+      forProduct19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>(
+    Decoder<B> decodeB,
+    Decoder<C> decodeC,
+    Decoder<D> decodeD,
+    Decoder<E> decodeE,
+    Decoder<F> decodeF,
+    Decoder<G> decodeG,
+    Decoder<H> decodeH,
+    Decoder<I> decodeI,
+    Decoder<J> decodeJ,
+    Decoder<K> decodeK,
+    Decoder<L> decodeL,
+    Decoder<M> decodeM,
+    Decoder<N> decodeN,
+    Decoder<O> decodeO,
+    Decoder<P> decodeP,
+    Decoder<Q> decodeQ,
+    Decoder<R> decodeR,
+    Decoder<S> decodeS,
+    Decoder<T> decodeT,
+    A Function(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) fn,
+  ) =>
+          tuple19(
+                  decodeB,
+                  decodeC,
+                  decodeD,
+                  decodeE,
+                  decodeF,
+                  decodeG,
+                  decodeH,
+                  decodeI,
+                  decodeJ,
+                  decodeK,
+                  decodeL,
+                  decodeM,
+                  decodeN,
+                  decodeO,
+                  decodeP,
+                  decodeQ,
+                  decodeR,
+                  decodeS,
+                  decodeT)
+              .map((t) => t.apply(fn));
+
+  static Decoder<A> forProduct20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P,
+          Q, R, S, T, U>(
+    Decoder<B> decodeB,
+    Decoder<C> decodeC,
+    Decoder<D> decodeD,
+    Decoder<E> decodeE,
+    Decoder<F> decodeF,
+    Decoder<G> decodeG,
+    Decoder<H> decodeH,
+    Decoder<I> decodeI,
+    Decoder<J> decodeJ,
+    Decoder<K> decodeK,
+    Decoder<L> decodeL,
+    Decoder<M> decodeM,
+    Decoder<N> decodeN,
+    Decoder<O> decodeO,
+    Decoder<P> decodeP,
+    Decoder<Q> decodeQ,
+    Decoder<R> decodeR,
+    Decoder<S> decodeS,
+    Decoder<T> decodeT,
+    Decoder<U> decodeU,
+    A Function(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) fn,
+  ) =>
+      tuple20(
+              decodeB,
+              decodeC,
+              decodeD,
+              decodeE,
+              decodeF,
+              decodeG,
+              decodeH,
+              decodeI,
+              decodeJ,
+              decodeK,
+              decodeL,
+              decodeM,
+              decodeN,
+              decodeO,
+              decodeP,
+              decodeQ,
+              decodeR,
+              decodeS,
+              decodeT,
+              decodeU)
+          .map((t) => t.apply(fn));
 }
