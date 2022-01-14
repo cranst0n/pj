@@ -38,20 +38,20 @@ class Decoder<A> {
   ///////////////////////////////// Primitives /////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
 
-  static Decoder<BigInt> get bigint => string
+  static Decoder<BigInt> bigint = string
       .emap((s) => optionOf(BigInt.tryParse(s))
           .toEither(() => 'Could not parse BigInt: $s'))
       .handleErrorWith(
           (err) => Decoder.error(DecodingError.parsingFailure(err.reason)));
 
-  static Decoder<bool> get boolean => _primitive<bool>();
+  static Decoder<bool> boolean = _primitive<bool>();
 
-  static Decoder<DateTime> get dateTime => string.emap((str) =>
+  static Decoder<DateTime> dateTime = string.emap((str) =>
       catching(() => DateTime.parse(str)).leftMap((err) => err.toString()));
 
-  static Decoder<double> get dubble => _primitive<double>();
+  static Decoder<double> dubble = _primitive<double>();
 
-  static Decoder<Duration> get duration =>
+  static Decoder<Duration> duration =
       integer.map((micros) => Duration(microseconds: micros));
 
   static Decoder<IList<A>> ilistOf<A>(Decoder<A> elementDecoder) {
@@ -70,17 +70,17 @@ class Decoder<A> {
     );
   }
 
-  static Decoder<int> get integer => _primitive<int>();
+  static Decoder<int> integer = _primitive<int>();
 
   static Decoder<List<A>> listOf<A>(Decoder<A> elementDecoder) =>
       ilistOf(elementDecoder).map((l) => l.toList());
 
-  static Decoder<num> get number => _primitive<num>();
+  static Decoder<num> number = _primitive<num>();
 
-  static Decoder<Map<String, dynamic>> get object =>
+  static Decoder<Map<String, dynamic>> object =
       _primitive<Map<String, dynamic>>();
 
-  static Decoder<String> get string => _primitive<String>();
+  static Decoder<String> string = _primitive<String>();
 
   static Decoder<T> _primitive<T>() => Decoder._unkeyed((json) => json == null
       ? left(DecodingError.missingField(''))

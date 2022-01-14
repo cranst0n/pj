@@ -52,34 +52,32 @@ class Codec<A> {
   ///////////////////////////////// Primitives /////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
 
-  static Codec<BigInt> get bigint => Codec._(Decoder.bigint, Encoder.bigint);
+  static Codec<BigInt> bigint = Codec._(Decoder.bigint, Encoder.bigint);
 
-  static Codec<bool> get boolean => Codec._(Decoder.boolean, Encoder.boolean);
+  static Codec<bool> boolean = Codec._(Decoder.boolean, Encoder.boolean);
 
-  static Codec<DateTime> get dateTime =>
-      Codec._(Decoder.dateTime, Encoder.dateTime);
+  static Codec<DateTime> dateTime = Codec._(Decoder.dateTime, Encoder.dateTime);
 
-  static Codec<double> get dubble => Codec._(Decoder.dubble, Encoder.dubble);
+  static Codec<double> dubble = Codec._(Decoder.dubble, Encoder.dubble);
 
-  static Codec<Duration> get duration =>
-      Codec._(Decoder.duration, Encoder.duration);
+  static Codec<Duration> duration = Codec._(Decoder.duration, Encoder.duration);
 
   static Codec<IList<A>> ilistOf<A>(Codec<A> elementCodec) => Codec._(
       Decoder.ilistOf(elementCodec.decoder),
       Encoder.ilistOf(elementCodec.encoder));
 
-  static Codec<int> get integer => Codec._(Decoder.integer, Encoder.integer);
+  static Codec<int> integer = Codec._(Decoder.integer, Encoder.integer);
 
   static Codec<List<A>> listOf<A>(Codec<A> elementCodec) => Codec._(
       Decoder.listOf(elementCodec.decoder),
       Encoder.listOf(elementCodec.encoder));
 
-  static Codec<num> get number => Codec._(Decoder.number, Encoder.number);
+  static Codec<num> number = Codec._(Decoder.number, Encoder.number);
 
-  static Codec<Map<String, dynamic>> get object =>
+  static Codec<Map<String, dynamic>> object =
       Codec._(Decoder.object, Encoder.object);
 
-  static Codec<String> get string => Codec._(Decoder.string, Encoder.string);
+  static Codec<String> string = Codec._(Decoder.string, Encoder.string);
 
   //////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////// TupleN ///////////////////////////////////
