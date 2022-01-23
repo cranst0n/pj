@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.7
+
+- Bug fix for Option Encoder.
+
 ## 0.0.6
 
 - Increase arity to 20.
