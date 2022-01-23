@@ -65,7 +65,7 @@ class Encoder<A> {
   Encoder<A?> get nullable => Encoder._keyed(key, id);
 
   Encoder<Option<A>> get optional =>
-      Encoder._keyed(key, (opt) => opt.fold(() => null, id));
+      Encoder._keyed(key, (opt) => opt.fold(() => null, _encodeF));
 
   //////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////// TupleN ///////////////////////////////////
