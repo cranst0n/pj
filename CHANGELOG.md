@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.0.8
+
+- Add custom Encoder constructor.
+- Bump minimum SDK to 2.16.0.
+
 ## 0.0.7
 
 - Bug fix for Option Encoder.
