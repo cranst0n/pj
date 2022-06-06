@@ -11,12 +11,10 @@ class Foo extends Equatable {
 
   const Foo(this.a, this.b);
 
-  static Foo apply(int a, bool b) => Foo(a, b);
-
   static final codec = Codec.forProduct2(
     integer('a').withDefault(42),
     boolean('b'),
-    Foo.apply,
+    Foo.new,
     (f) => tuple2(f.a, f.b),
   );
 
@@ -30,12 +28,10 @@ class Bar extends Equatable {
 
   const Bar(this.a, this.b);
 
-  static Bar apply(double a, String b) => Bar(a, b);
-
   static final codec = Codec.forProduct2(
     dubble('a'),
     string('b'),
-    Bar.apply,
+    Bar.new,
     (b) => tuple2(b.a, b.b),
   );
 
@@ -78,26 +74,6 @@ class Baz extends Equatable {
     this.lamb,
   );
 
-  static Baz apply(
-    int integer,
-    Option<String> maybeString1,
-    Option<String> maybeString2,
-    double dubble,
-    bool boolean,
-    List<String> strings,
-    List<Foo> foos,
-    Bar bar,
-    List<bool> bools,
-    bool? nullable,
-    String recovered,
-    Map<String, dynamic> mary,
-    DateTime had,
-    Duration little,
-    BigInt lamb,
-  ) =>
-      Baz(integer, maybeString1, maybeString2, dubble, boolean, strings, foos,
-          bar, bools, nullable, recovered, mary, had, little, lamb);
-
   static final codec = Codec.forProduct15(
     'integer'.integer.ensure((x) => x > 0, 'int must be > 0'),
     'maybeString1'.string.optional,
@@ -114,7 +90,7 @@ class Baz extends Equatable {
     'had'.dateTime,
     'little'.duration,
     'lamb'.bigInt,
-    Baz.apply,
+    Baz.new,
     (baz) => Tuple15(
       baz.integer,
       baz.maybeString1,

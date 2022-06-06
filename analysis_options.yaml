@@ -4,8 +4,6 @@ analyzer:
   language:
     strict-inference: true
     strict-raw-types: true
-  enable-experiment:
-    - nonfunction-type-aliases
 
 linter:
   rules:

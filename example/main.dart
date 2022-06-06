@@ -67,17 +67,6 @@ class Person {
     this.pets,
   );
 
-  // Constructor tearoffs make this obsolete
-  static Person apply(
-    String firstName,
-    String? lastName,
-    DateTime birthday,
-    int luckyNumber,
-    Option<bool> registeredVoter,
-    List<Pet> pets,
-  ) =>
-      Person(firstName, lastName, birthday, luckyNumber, registeredVoter, pets);
-
   /// Our [Person] codec that will serialize a value to JSON object
   static final codec = Codec.forProduct6(
     // Provide the individual key-value codecs
@@ -88,7 +77,7 @@ class Person {
     'registeredVoter'.boolean.optional,
     'pets'.listOf(Pet.codecAlt),
     // Provide how to turn the individual values into out Product type (Pet)
-    Person.apply,
+    Person.new,
     // Provide how to turn our product type into a tuple
     (person) => tuple6(person.firstName, person.lastName, person.birthday,
         person.luckyNumber, person.registeredVoter, person.pets),
@@ -102,7 +91,7 @@ class Person {
     integer('luckyNumber'),
     boolean('registeredVoter').optional,
     listOf(Pet.codec)('pets'),
-    Person.apply,
+    Person.new,
     (person) => tuple6(person.firstName, person.lastName, person.birthday,
         person.luckyNumber, person.registeredVoter, person.pets),
   );
@@ -115,15 +104,12 @@ class Pet {
 
   Pet(this.name, this.age, this.bellyRubs);
 
-  static Pet apply(String name, Option<int> age, int bellyRubs) =>
-      Pet(name, age, bellyRubs);
-
   /// Our [Pet] codec that will serialize a value to JSON object
   static final codec = Codec.forProduct3(
     'pet-name'.string,
     'age'.integer.optional,
     'belly-rubs'.integer.withDefault(8675309),
-    Pet.apply,
+    Pet.new,
     (pet) => tuple3(pet.name, pet.age, pet.bellyRubs),
   );
 
@@ -133,7 +119,7 @@ class Pet {
     string('pet-name'),
     integer('age').optional,
     integer('belly-rubs').withDefault(8675309),
-    Pet.apply,
+    Pet.new,
     (pet) => tuple3(pet.name, pet.age, pet.bellyRubs),
   );
 
@@ -144,7 +130,7 @@ class Pet {
     Codec.string.keyed('pet-name'),
     Codec.integer.keyed('age').optional,
     Codec.integer.keyed('belly-rubs').withDefault(8675309),
-    Pet.apply,
+    Pet.new,
     (pet) => tuple3(pet.name, pet.age, pet.bellyRubs),
   );
 }
