@@ -105,6 +105,15 @@ void main() {
     });
   });
 
+  test('Encoder.custom', () {
+    final encoder = Encoder.custom((int i) => {
+          'properties': {'name': 'Bruce', 'age': i}
+        });
+    expect(encoder.encode(42), {
+      'properties': {'name': 'Bruce', 'age': 42}
+    });
+  });
+
   test('Encode Bar', () {
     const original = Bar(1.2, 'message');
 

@@ -9,6 +9,8 @@ class Encoder<A> {
 
   const Encoder._keyed(this.key, this._encodeF);
 
+  const Encoder.custom(this._encodeF) : key = const None();
+
   dynamic encode(A a) => key.fold<dynamic>(
         () => _encodeF(a),
         (key) => Map.fromEntries(
