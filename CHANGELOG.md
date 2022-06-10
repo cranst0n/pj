@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.0.9
+
+- Bug fix for `Decoder.keyed`.
+- **BREAKING CHANGE:** Renamed `keyed` to `at`.
+
 ## 0.0.8
 
 - Add custom Encoder constructor.

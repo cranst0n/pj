@@ -1,5 +1,5 @@
 name: pj
-version: 0.0.8
+version: 0.0.9
 homepage: https://github.com/cranst0n/pj
 description: >
   JSON library built on dartz with the primary aim of making the inherent fallibility explicit.
