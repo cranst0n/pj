@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:pj/src/decoder.dart';
 import 'package:pj/src/encoder.dart';
+import 'package:pj/src/error.dart';
 
 /// A Codec is a product of an [Encoder] and a [Decoder]. It provides
 /// the functionality of converting between values of type A and JSON.
@@ -19,7 +20,7 @@ class Codec<A> {
   ////////////////////////////// Codec combinators /////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
 
-  Codec<B> exmap<B>(Either<String, B> Function(A) f, A Function(B) g) =>
+  Codec<B> exmap<B>(Either<DecodingError, B> Function(A) f, A Function(B) g) =>
       Codec._(decoder.emap(f), encoder.contramap(g));
 
   Codec<A> keyed(String key) => Codec._(decoder.keyed(key), encoder.keyed(key));

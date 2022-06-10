@@ -44,8 +44,9 @@ void main() {
   });
 
   test('Codec.exmap', () {
-    Either<String, int> parseString(String s) =>
-        optionOf(int.tryParse(s)).toEither(() => 'Failed to parse: $s');
+    Either<DecodingError, int> parseString(String s) =>
+        optionOf(int.tryParse(s))
+            .toEither(() => DecodingError('Failed to parse: $s'));
 
     final codec = string('foo').exmap<int>(parseString, (i) => i.toString());
 

@@ -118,7 +118,8 @@ void main() {
   });
 
   test('Decoder.emap', () {
-    Either<String, int> foo(int i) => i > 0 ? right(42) : left('emap left');
+    Either<DecodingError, int> foo(int i) =>
+        i > 0 ? right(42) : left(const DecodingError('emap left'));
 
     Decoder.integer.emap(foo).decode(1).fold(
         (err) => fail('emap left should not fail: $err'),
@@ -132,13 +133,17 @@ void main() {
   test('Decoder.omap', () {
     Option<int> foo(String s) => s.isNotEmpty ? some(42) : none();
 
-    Decoder.string.omap(foo, () => 'foo none').decode('non-empty').fold(
-        (err) => fail('omap none should not fail: $err'),
-        (actual) => expect(actual, 42));
+    Decoder.string
+        .omap(foo, () => const DecodingError('foo none'))
+        .decode('non-empty')
+        .fold((err) => fail('omap none should not fail: $err'),
+            (actual) => expect(actual, 42));
 
-    Decoder.string.omap(foo, () => 'foo none').decode('').fold(
-        (err) => expect(err, const DecodingError('foo none')),
-        (actual) => fail('omap some should not succeed: $actual'));
+    Decoder.string
+        .omap(foo, () => const DecodingError('foo none'))
+        .decode('')
+        .fold((err) => expect(err, const DecodingError('foo none')),
+            (actual) => fail('omap some should not succeed: $actual'));
   });
 
   test('Decoder.fold', () {
@@ -185,6 +190,24 @@ void main() {
       (err) => expect(err, const DecodingError('Unrecoverable')),
       (actual) => fail('handleErrorWith success failed: $actual'),
     );
+  });
+
+  test('Decoder.keyed', () {
+    final foo = Decoder.integer.keyed('foo');
+    final bar = foo.keyed('bar');
+
+    final fooJson = {'foo': 42};
+    final barJson = {'bar': fooJson};
+
+    foo.decode(fooJson).fold(
+          (err) => fail(err.toString()),
+          (value) => expect(value, 42),
+        );
+
+    bar.decode(barJson).fold(
+          (err) => fail(err.toString()),
+          (value) => expect(value, 42),
+        );
   });
 
   test('Decoder.optional', () {

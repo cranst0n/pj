@@ -40,14 +40,15 @@ class Decoder<A> {
 
   static Decoder<BigInt> bigint = string
       .emap((s) => optionOf(BigInt.tryParse(s))
-          .toEither(() => 'Could not parse BigInt: $s'))
+          .toEither(() => DecodingError('Could not parse BigInt: $s')))
       .handleErrorWith(
           (err) => Decoder.error(DecodingError.parsingFailure(err.reason)));
 
   static Decoder<bool> boolean = _primitive<bool>();
 
   static Decoder<DateTime> dateTime = string.emap((str) =>
-      catching(() => DateTime.parse(str)).leftMap((err) => err.toString()));
+      catching(() => DateTime.parse(str))
+          .leftMap((err) => DecodingError(err.toString())));
 
   static Decoder<double> dubble = _primitive<double>();
 
@@ -96,8 +97,8 @@ class Decoder<A> {
   Decoder<Either<A, B>> either<B>(Decoder<B> decodeB) =>
       map<Either<A, B>>(left).recoverWith(decodeB.map(right));
 
-  Decoder<B> emap<B>(Either<String, B> Function(A) f) => Decoder._unkeyed(
-      (json) => decode(json).flatMap((a) => f(a).leftMap(DecodingError.apply)));
+  Decoder<B> emap<B>(Either<DecodingError, B> Function(A) f) =>
+      Decoder._unkeyed((json) => decode(json).flatMap(f));
 
   Decoder<A> ensure(bool Function(A) predicate, String message) =>
       flatMap((a) => predicate(a) ? pure(a) : Decoder.fail(message));
@@ -126,7 +127,10 @@ class Decoder<A> {
 
   Decoder<A?> get nullable => optional.map((opt) => opt.fold(() => null, id));
 
-  Decoder<B> omap<B>(Option<B> Function(A) f, String Function() onNone) =>
+  Decoder<B> omap<B>(
+    Option<B> Function(A) f,
+    DecodingError Function() onNone,
+  ) =>
       emap((a) => f(a).toEither(onNone));
 
   // only recover from a missing field error
@@ -146,7 +150,10 @@ class Decoder<A> {
   Decoder<A> withErrorMessage(String message) =>
       handleErrorWith((err) => Decoder.error(err.withReason(message)));
 
-  Decoder<A> keyed(String key) => Decoder._keyed(some(key), _decodeF);
+  Decoder<A> keyed(String key) => this.key.fold(
+        () => Decoder._keyed(some(key), _decodeF),
+        (_) => Decoder.object.keyed(key).emap((json) => decode(json)),
+      );
 
   //////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////// TupleN ///////////////////////////////////
