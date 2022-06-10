@@ -98,7 +98,7 @@ void main() {
   });
 
   test('Encoder.keyed', () {
-    expect('foo'.integer.keyed('key').keyed('key2').encode(2), {
+    expect('foo'.integer.at('key').at('key2').encode(2), {
       'key2': {
         'key': {'foo': 2}
       }

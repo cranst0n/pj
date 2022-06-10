@@ -2,31 +2,31 @@ import 'package:dartz/dartz.dart';
 import 'package:pj/src/codec.dart';
 
 extension CodecStringOps on String {
-  Codec<BigInt> get bigInt => Codec.bigint.keyed(this);
+  Codec<BigInt> get bigInt => Codec.bigint.at(this);
 
-  Codec<bool> get boolean => Codec.boolean.keyed(this);
+  Codec<bool> get boolean => Codec.boolean.at(this);
 
-  Codec<DateTime> get dateTime => Codec.dateTime.keyed(this);
+  Codec<DateTime> get dateTime => Codec.dateTime.at(this);
 
-  Codec<double> get dubble => Codec.dubble.keyed(this);
+  Codec<double> get dubble => Codec.dubble.at(this);
 
-  Codec<Duration> get duration => Codec.duration.keyed(this);
+  Codec<Duration> get duration => Codec.duration.at(this);
 
   Codec<IList<A>> ilistOf<A>(Codec<A> elementCodec) =>
-      Codec.ilistOf(elementCodec).keyed(this);
+      Codec.ilistOf(elementCodec).at(this);
 
-  Codec<int> get integer => Codec.integer.keyed(this);
+  Codec<int> get integer => Codec.integer.at(this);
 
   Codec<List<A>> listOf<A>(Codec<A> elementCodec) =>
-      Codec.listOf(elementCodec).keyed(this);
+      Codec.listOf(elementCodec).at(this);
 
-  Codec<num> get number => Codec.number.keyed(this);
+  Codec<num> get number => Codec.number.at(this);
 
-  Codec<A> of<A>(Codec<A> codec) => codec.keyed(this);
+  Codec<A> of<A>(Codec<A> codec) => codec.at(this);
 
-  Codec<Map<String, dynamic>> get object => Codec.object.keyed(this);
+  Codec<Map<String, dynamic>> get object => Codec.object.at(this);
 
-  Codec<String> get string => Codec.string.keyed(this);
+  Codec<String> get string => Codec.string.at(this);
 }
 
 Codec<BigInt> Function(String s) get bigInt => (key) => key.bigInt;

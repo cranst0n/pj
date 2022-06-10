@@ -193,8 +193,8 @@ void main() {
   });
 
   test('Decoder.keyed', () {
-    final foo = Decoder.integer.keyed('foo');
-    final bar = foo.keyed('bar');
+    final foo = Decoder.integer.at('foo');
+    final bar = foo.at('bar');
 
     final fooJson = {'foo': 42};
     final barJson = {'bar': fooJson};
@@ -211,33 +211,33 @@ void main() {
   });
 
   test('Decoder.optional', () {
-    Decoder.integer.keyed('x').optional.decode({'x': null}).fold(
+    Decoder.integer.at('x').optional.decode({'x': null}).fold(
       (err) => fail('optional null should not fail: $err'),
       (actual) => expect(actual, none<int>()),
     );
 
     // Ensure that the placement of the '.optional' doesn't matter
-    Decoder.integer.optional.keyed('x').decode({'x': null}).fold(
+    Decoder.integer.optional.at('x').decode({'x': null}).fold(
       (err) => fail('optional null should not fail: $err'),
       (actual) => expect(actual, none<int>()),
     );
   });
 
   test('Decoder.nullable', () {
-    Decoder.integer.keyed('x').nullable.decode({'x': null}).fold(
+    Decoder.integer.at('x').nullable.decode({'x': null}).fold(
       (err) => fail('nullable null should not fail: $err'),
       (actual) => expect(actual, null),
     );
 
     // Ensure that the placement of the '.nullable' doesn't matter
-    Decoder.integer.nullable.keyed('x').decode({'x': null}).fold(
+    Decoder.integer.nullable.at('x').decode({'x': null}).fold(
       (err) => fail('nullable null should not fail: $err'),
       (actual) => expect(actual, null),
     );
   });
 
   test('Decoder.either', () {
-    final decoder = Decoder.integer.either(Decoder.boolean).keyed('x');
+    final decoder = Decoder.integer.either(Decoder.boolean).at('x');
 
     decoder.decode({'x': 42}).fold(
       (err) => fail('either error should not fail: $err'),
@@ -251,8 +251,7 @@ void main() {
   });
 
   test('Decoder.either behavior', () {
-    final encoder =
-        Encoder.integer.keyed('a').either(Encoder.string.keyed('a'));
+    final encoder = Encoder.integer.at('a').either(Encoder.string.at('a'));
 
     expect(encoder.encode(left(42)), {'a': 42});
     expect(encoder.encode(right('foo')), {'a': 'foo'});

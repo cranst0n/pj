@@ -92,6 +92,11 @@ class Decoder<A> {
   //////////////////////////////// Combinators /////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
 
+  Decoder<A> at(String key) => this.key.fold(
+        () => Decoder._keyed(some(key), _decodeF),
+        (_) => Decoder.object.at(key).emap((json) => decode(json)),
+      );
+
   Decoder<B> as<B>(B b) => map((_) => b);
 
   Decoder<Either<A, B>> either<B>(Decoder<B> decodeB) =>
@@ -149,11 +154,6 @@ class Decoder<A> {
 
   Decoder<A> withErrorMessage(String message) =>
       handleErrorWith((err) => Decoder.error(err.withReason(message)));
-
-  Decoder<A> keyed(String key) => this.key.fold(
-        () => Decoder._keyed(some(key), _decodeF),
-        (_) => Decoder.object.keyed(key).emap((json) => decode(json)),
-      );
 
   //////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////// TupleN ///////////////////////////////////

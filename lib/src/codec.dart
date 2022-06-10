@@ -20,10 +20,10 @@ class Codec<A> {
   ////////////////////////////// Codec combinators /////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
 
+  Codec<A> at(String key) => Codec._(decoder.at(key), encoder.at(key));
+
   Codec<B> exmap<B>(Either<DecodingError, B> Function(A) f, A Function(B) g) =>
       Codec._(decoder.emap(f), encoder.contramap(g));
-
-  Codec<A> keyed(String key) => Codec._(decoder.keyed(key), encoder.keyed(key));
 
   Codec<A?> get nullable => Codec._(decoder.nullable, encoder.nullable);
 

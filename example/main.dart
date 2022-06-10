@@ -127,9 +127,9 @@ class Pet {
   /// This method opens a few addional doors that give you more power
   /// but also more ways to potentially shoot yourself in the foot.
   static final codecLowLevel = Codec.forProduct3(
-    Codec.string.keyed('pet-name'),
-    Codec.integer.keyed('age').optional,
-    Codec.integer.keyed('belly-rubs').withDefault(8675309),
+    Codec.string.at('pet-name'),
+    Codec.integer.at('age').optional,
+    Codec.integer.at('belly-rubs').withDefault(8675309),
     Pet.new,
     (pet) => tuple3(pet.name, pet.age, pet.bellyRubs),
   );

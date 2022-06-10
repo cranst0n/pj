@@ -55,14 +55,14 @@ class Encoder<A> {
   //////////////////////////////// Combinators /////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
 
+  Encoder<A> at(String key) => Encoder._keyed(
+      some(key), (a) => Encoder._keyed(this.key, _encodeF).encode(a));
+
   Encoder<B> contramap<B>(A Function(B) f) =>
       Encoder._unkeyed((B b) => encode(f(b)));
 
   Encoder<Either<A, B>> either<B>(Encoder<B> encodeB) => Encoder._unkeyed(
       (either) => either.fold((a) => encode(a), (b) => encodeB.encode(b)));
-
-  Encoder<A> keyed(String key) => Encoder._keyed(
-      some(key), (a) => Encoder._keyed(this.key, _encodeF).encode(a));
 
   Encoder<A?> get nullable => Encoder._keyed(key, id);
 

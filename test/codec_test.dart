@@ -59,8 +59,7 @@ void main() {
   });
 
   test('Codec.recoverWith', () {
-    final codec =
-        Codec.integer.keyed('a').recoverWith(Codec.integer.keyed('b'));
+    final codec = Codec.integer.at('a').recoverWith(Codec.integer.at('b'));
 
     expect(codec.decode({'a': 1}), right<DecodingError, int>(1));
     expect(codec.decode({'b': 2}), right<DecodingError, int>(2));
