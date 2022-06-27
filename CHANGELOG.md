@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.10
+
+- Make `Codec` constructor public.
+
 ## 0.0.9
 
 - Bug fix for `Decoder.keyed`.
