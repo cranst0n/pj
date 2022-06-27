@@ -11,7 +11,7 @@ class Codec<A> {
   final Decoder<A> decoder;
   final Encoder<A> encoder;
 
-  Codec._(this.decoder, this.encoder);
+  const Codec(this.decoder, this.encoder);
 
   DecodeResult<A> decode(dynamic json) => decoder.decode(json);
   dynamic encode(A a) => encoder.encode(a);
@@ -20,65 +20,65 @@ class Codec<A> {
   ////////////////////////////// Codec combinators /////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
 
-  Codec<A> at(String key) => Codec._(decoder.at(key), encoder.at(key));
+  Codec<A> at(String key) => Codec(decoder.at(key), encoder.at(key));
 
   Codec<B> exmap<B>(Either<DecodingError, B> Function(A) f, A Function(B) g) =>
-      Codec._(decoder.emap(f), encoder.contramap(g));
+      Codec(decoder.emap(f), encoder.contramap(g));
 
-  Codec<A?> get nullable => Codec._(decoder.nullable, encoder.nullable);
+  Codec<A?> get nullable => Codec(decoder.nullable, encoder.nullable);
 
-  Codec<Option<A>> get optional => Codec._(decoder.optional, encoder.optional);
+  Codec<Option<A>> get optional => Codec(decoder.optional, encoder.optional);
 
   Codec<B> xmap<B>(B Function(A) f, A Function(B) g) =>
-      Codec._(decoder.map(f), encoder.contramap(g));
+      Codec(decoder.map(f), encoder.contramap(g));
 
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////// Decoder combinators /////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
 
   Codec<A> ensure(bool Function(A) predicate, String message) =>
-      Codec._(decoder.ensure(predicate, message), encoder);
+      Codec(decoder.ensure(predicate, message), encoder);
 
-  Codec<A> recover(A a) => Codec._(decoder.recover(a), encoder);
+  Codec<A> recover(A a) => Codec(decoder.recover(a), encoder);
 
   Codec<A> recoverWith(Codec<A> other) =>
-      Codec._(decoder.recoverWith(other.decoder), encoder);
+      Codec(decoder.recoverWith(other.decoder), encoder);
 
-  Codec<A> withDefault(A a) => Codec._(decoder.withDefault(a), encoder);
+  Codec<A> withDefault(A a) => Codec(decoder.withDefault(a), encoder);
 
   Codec<A> withErrorMessage(String message) =>
-      Codec._(decoder.withErrorMessage(message), encoder);
+      Codec(decoder.withErrorMessage(message), encoder);
 
   //////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////// Primitives /////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
 
-  static Codec<BigInt> bigint = Codec._(Decoder.bigint, Encoder.bigint);
+  static Codec<BigInt> bigint = Codec(Decoder.bigint, Encoder.bigint);
 
-  static Codec<bool> boolean = Codec._(Decoder.boolean, Encoder.boolean);
+  static Codec<bool> boolean = Codec(Decoder.boolean, Encoder.boolean);
 
-  static Codec<DateTime> dateTime = Codec._(Decoder.dateTime, Encoder.dateTime);
+  static Codec<DateTime> dateTime = Codec(Decoder.dateTime, Encoder.dateTime);
 
-  static Codec<double> dubble = Codec._(Decoder.dubble, Encoder.dubble);
+  static Codec<double> dubble = Codec(Decoder.dubble, Encoder.dubble);
 
-  static Codec<Duration> duration = Codec._(Decoder.duration, Encoder.duration);
+  static Codec<Duration> duration = Codec(Decoder.duration, Encoder.duration);
 
-  static Codec<IList<A>> ilistOf<A>(Codec<A> elementCodec) => Codec._(
+  static Codec<IList<A>> ilistOf<A>(Codec<A> elementCodec) => Codec(
       Decoder.ilistOf(elementCodec.decoder),
       Encoder.ilistOf(elementCodec.encoder));
 
-  static Codec<int> integer = Codec._(Decoder.integer, Encoder.integer);
+  static Codec<int> integer = Codec(Decoder.integer, Encoder.integer);
 
-  static Codec<List<A>> listOf<A>(Codec<A> elementCodec) => Codec._(
+  static Codec<List<A>> listOf<A>(Codec<A> elementCodec) => Codec(
       Decoder.listOf(elementCodec.decoder),
       Encoder.listOf(elementCodec.encoder));
 
-  static Codec<num> number = Codec._(Decoder.number, Encoder.number);
+  static Codec<num> number = Codec(Decoder.number, Encoder.number);
 
   static Codec<Map<String, dynamic>> object =
-      Codec._(Decoder.object, Encoder.object);
+      Codec(Decoder.object, Encoder.object);
 
-  static Codec<String> string = Codec._(Decoder.string, Encoder.string);
+  static Codec<String> string = Codec(Decoder.string, Encoder.string);
 
   //////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////// TupleN ///////////////////////////////////
@@ -88,7 +88,7 @@ class Codec<A> {
     Codec<A> codecA,
     Codec<B> codecB,
   ) =>
-      Codec._(
+      Codec(
         Decoder.tuple2(codecA.decoder, codecB.decoder),
         Encoder.tuple2(codecA.encoder, codecB.encoder),
       );
@@ -98,7 +98,7 @@ class Codec<A> {
     Codec<B> codecB,
     Codec<C> codecC,
   ) =>
-      Codec._(
+      Codec(
         Decoder.tuple3(codecA.decoder, codecB.decoder, codecC.decoder),
         Encoder.tuple3(codecA.encoder, codecB.encoder, codecC.encoder),
       );
@@ -109,7 +109,7 @@ class Codec<A> {
     Codec<C> codecC,
     Codec<D> codecD,
   ) =>
-      Codec._(
+      Codec(
         Decoder.tuple4(
             codecA.decoder, codecB.decoder, codecC.decoder, codecD.decoder),
         Encoder.tuple4(
@@ -123,7 +123,7 @@ class Codec<A> {
     Codec<D> codecD,
     Codec<E> codecE,
   ) =>
-      Codec._(
+      Codec(
         Decoder.tuple5(codecA.decoder, codecB.decoder, codecC.decoder,
             codecD.decoder, codecE.decoder),
         Encoder.tuple5(codecA.encoder, codecB.encoder, codecC.encoder,
@@ -138,7 +138,7 @@ class Codec<A> {
     Codec<E> codecE,
     Codec<F> codecF,
   ) =>
-      Codec._(
+      Codec(
         Decoder.tuple6(codecA.decoder, codecB.decoder, codecC.decoder,
             codecD.decoder, codecE.decoder, codecF.decoder),
         Encoder.tuple6(codecA.encoder, codecB.encoder, codecC.encoder,
@@ -154,7 +154,7 @@ class Codec<A> {
     Codec<F> codecF,
     Codec<G> codecG,
   ) =>
-      Codec._(
+      Codec(
         Decoder.tuple7(codecA.decoder, codecB.decoder, codecC.decoder,
             codecD.decoder, codecE.decoder, codecF.decoder, codecG.decoder),
         Encoder.tuple7(codecA.encoder, codecB.encoder, codecC.encoder,
@@ -171,7 +171,7 @@ class Codec<A> {
     Codec<G> codecG,
     Codec<H> codecH,
   ) =>
-      Codec._(
+      Codec(
         Decoder.tuple8(
             codecA.decoder,
             codecB.decoder,
@@ -204,7 +204,7 @@ class Codec<A> {
     Codec<H> codecH,
     Codec<I> codecI,
   ) =>
-          Codec._(
+          Codec(
             Decoder.tuple9(
                 codecA.decoder,
                 codecB.decoder,
@@ -240,7 +240,7 @@ class Codec<A> {
     Codec<I> codecI,
     Codec<J> codecJ,
   ) =>
-          Codec._(
+          Codec(
             Decoder.tuple10(
                 codecA.decoder,
                 codecB.decoder,
@@ -279,7 +279,7 @@ class Codec<A> {
     Codec<J> codecJ,
     Codec<K> codecK,
   ) =>
-          Codec._(
+          Codec(
             Decoder.tuple11(
                 codecA.decoder,
                 codecB.decoder,
@@ -321,7 +321,7 @@ class Codec<A> {
     Codec<K> codecK,
     Codec<L> codecL,
   ) =>
-          Codec._(
+          Codec(
             Decoder.tuple12(
                 codecA.decoder,
                 codecB.decoder,
@@ -366,7 +366,7 @@ class Codec<A> {
     Codec<L> codecL,
     Codec<M> codecM,
   ) =>
-          Codec._(
+          Codec(
             Decoder.tuple13(
                 codecA.decoder,
                 codecB.decoder,
@@ -414,7 +414,7 @@ class Codec<A> {
     Codec<M> codecM,
     Codec<N> codecN,
   ) =>
-          Codec._(
+          Codec(
             Decoder.tuple14(
                 codecA.decoder,
                 codecB.decoder,
@@ -465,7 +465,7 @@ class Codec<A> {
     Codec<N> codecN,
     Codec<O> codecO,
   ) =>
-          Codec._(
+          Codec(
             Decoder.tuple15(
                 codecA.decoder,
                 codecB.decoder,
@@ -519,7 +519,7 @@ class Codec<A> {
     Codec<O> codecO,
     Codec<P> codecP,
   ) =>
-          Codec._(
+          Codec(
             Decoder.tuple16(
                 codecA.decoder,
                 codecB.decoder,
@@ -576,7 +576,7 @@ class Codec<A> {
     Codec<P> codecP,
     Codec<Q> codecQ,
   ) =>
-          Codec._(
+          Codec(
             Decoder.tuple17(
                 codecA.decoder,
                 codecB.decoder,
@@ -636,7 +636,7 @@ class Codec<A> {
     Codec<Q> codecQ,
     Codec<R> codecR,
   ) =>
-          Codec._(
+          Codec(
             Decoder.tuple18(
                 codecA.decoder,
                 codecB.decoder,
@@ -699,7 +699,7 @@ class Codec<A> {
     Codec<R> codecR,
     Codec<S> codecS,
   ) =>
-          Codec._(
+          Codec(
             Decoder.tuple19(
                 codecA.decoder,
                 codecB.decoder,
@@ -766,7 +766,7 @@ class Codec<A> {
     Codec<S> codecS,
     Codec<T> codecT,
   ) =>
-          Codec._(
+          Codec(
             Decoder.tuple20(
                 codecA.decoder,
                 codecB.decoder,
@@ -821,7 +821,7 @@ class Codec<A> {
     A Function(B, C) apply,
     Tuple2<B, C> Function(A) tupled,
   ) =>
-      Codec._(
+      Codec(
         Decoder.forProduct2(codecB.decoder, codecC.decoder, apply),
         Encoder.forProduct2(codecB.encoder, codecC.encoder, tupled),
       );
@@ -833,7 +833,7 @@ class Codec<A> {
     A Function(B, C, D) apply,
     Tuple3<B, C, D> Function(A) tupled,
   ) =>
-      Codec._(
+      Codec(
         Decoder.forProduct3(
             codecB.decoder, codecC.decoder, codecD.decoder, apply),
         Encoder.forProduct3(
@@ -848,7 +848,7 @@ class Codec<A> {
     A Function(B, C, D, E) apply,
     Tuple4<B, C, D, E> Function(A) tupled,
   ) =>
-      Codec._(
+      Codec(
         Decoder.forProduct4(codecB.decoder, codecC.decoder, codecD.decoder,
             codecE.decoder, apply),
         Encoder.forProduct4(codecB.encoder, codecC.encoder, codecD.encoder,
@@ -864,7 +864,7 @@ class Codec<A> {
     A Function(B, C, D, E, F) apply,
     Tuple5<B, C, D, E, F> Function(A) tupled,
   ) =>
-      Codec._(
+      Codec(
         Decoder.forProduct5(codecB.decoder, codecC.decoder, codecD.decoder,
             codecE.decoder, codecF.decoder, apply),
         Encoder.forProduct5(codecB.encoder, codecC.encoder, codecD.encoder,
@@ -881,7 +881,7 @@ class Codec<A> {
     A Function(B, C, D, E, F, G) apply,
     Tuple6<B, C, D, E, F, G> Function(A) tupled,
   ) =>
-      Codec._(
+      Codec(
         Decoder.forProduct6(codecB.decoder, codecC.decoder, codecD.decoder,
             codecE.decoder, codecF.decoder, codecG.decoder, apply),
         Encoder.forProduct6(codecB.encoder, codecC.encoder, codecD.encoder,
@@ -899,7 +899,7 @@ class Codec<A> {
     A Function(B, C, D, E, F, G, H) apply,
     Tuple7<B, C, D, E, F, G, H> Function(A) tupled,
   ) =>
-      Codec._(
+      Codec(
         Decoder.forProduct7(
             codecB.decoder,
             codecC.decoder,
@@ -932,7 +932,7 @@ class Codec<A> {
     A Function(B, C, D, E, F, G, H, I) apply,
     Tuple8<B, C, D, E, F, G, H, I> Function(A) tupled,
   ) =>
-      Codec._(
+      Codec(
         Decoder.forProduct8(
             codecB.decoder,
             codecC.decoder,
@@ -968,7 +968,7 @@ class Codec<A> {
     A Function(B, C, D, E, F, G, H, I, J) apply,
     Tuple9<B, C, D, E, F, G, H, I, J> Function(A) tupled,
   ) =>
-      Codec._(
+      Codec(
         Decoder.forProduct9(
             codecB.decoder,
             codecC.decoder,
@@ -1007,7 +1007,7 @@ class Codec<A> {
     A Function(B, C, D, E, F, G, H, I, J, K) apply,
     Tuple10<B, C, D, E, F, G, H, I, J, K> Function(A) tupled,
   ) =>
-      Codec._(
+      Codec(
         Decoder.forProduct10(
             codecB.decoder,
             codecC.decoder,
@@ -1049,7 +1049,7 @@ class Codec<A> {
     A Function(B, C, D, E, F, G, H, I, J, K, L) apply,
     Tuple11<B, C, D, E, F, G, H, I, J, K, L> Function(A) tupled,
   ) =>
-      Codec._(
+      Codec(
         Decoder.forProduct11(
             codecB.decoder,
             codecC.decoder,
@@ -1094,7 +1094,7 @@ class Codec<A> {
     A Function(B, C, D, E, F, G, H, I, J, K, L, M) apply,
     Tuple12<B, C, D, E, F, G, H, I, J, K, L, M> Function(A) tupled,
   ) =>
-      Codec._(
+      Codec(
         Decoder.forProduct12(
             codecB.decoder,
             codecC.decoder,
@@ -1142,7 +1142,7 @@ class Codec<A> {
     A Function(B, C, D, E, F, G, H, I, J, K, L, M, N) apply,
     Tuple13<B, C, D, E, F, G, H, I, J, K, L, M, N> Function(A) tupled,
   ) =>
-      Codec._(
+      Codec(
         Decoder.forProduct13(
             codecB.decoder,
             codecC.decoder,
@@ -1193,7 +1193,7 @@ class Codec<A> {
     A Function(B, C, D, E, F, G, H, I, J, K, L, M, N, O) apply,
     Tuple14<B, C, D, E, F, G, H, I, J, K, L, M, N, O> Function(A) tupled,
   ) =>
-      Codec._(
+      Codec(
         Decoder.forProduct14(
             codecB.decoder,
             codecC.decoder,
@@ -1247,7 +1247,7 @@ class Codec<A> {
     A Function(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) apply,
     Tuple15<B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> Function(A) tupled,
   ) =>
-      Codec._(
+      Codec(
         Decoder.forProduct15(
             codecB.decoder,
             codecC.decoder,
@@ -1305,7 +1305,7 @@ class Codec<A> {
     A Function(B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) apply,
     Tuple16<B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> Function(A) tupled,
   ) =>
-          Codec._(
+          Codec(
             Decoder.forProduct16(
                 codecB.decoder,
                 codecC.decoder,
@@ -1367,7 +1367,7 @@ class Codec<A> {
     Tuple17<B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> Function(A)
         tupled,
   ) =>
-          Codec._(
+          Codec(
             Decoder.forProduct17(
                 codecB.decoder,
                 codecC.decoder,
@@ -1432,7 +1432,7 @@ class Codec<A> {
     Tuple18<B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> Function(A)
         tupled,
   ) =>
-          Codec._(
+          Codec(
             Decoder.forProduct18(
                 codecB.decoder,
                 codecC.decoder,
@@ -1500,7 +1500,7 @@ class Codec<A> {
     Tuple19<B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> Function(A)
         tupled,
   ) =>
-          Codec._(
+          Codec(
             Decoder.forProduct19(
                 codecB.decoder,
                 codecC.decoder,
@@ -1573,7 +1573,7 @@ class Codec<A> {
             Function(A)
         tupled,
   ) =>
-      Codec._(
+      Codec(
         Decoder.forProduct20(
             codecB.decoder,
             codecC.decoder,
